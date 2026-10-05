@@ -1,0 +1,21 @@
+{
+  "//": "Lighthouse CI. The accessibility score is the gate; the others are reported so you can see them move.",
+  "_comment": "The accessibility GATE is applied by the workflow from quality/thresholds.yml. The value below is a standalone warning level, deliberately lower, so this file is usable on its own without becoming a second copy of the gate.",
+  "ci": {
+    "collect": {
+      "url": ["http://localhost:8080/"],
+      "numberOfRuns": 3,
+      "settings": {
+        "chromeFlags": "--no-sandbox --headless"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": ["warn", { "minScore": 0.9 }],
+        "categories:performance": ["warn", { "minScore": 0.8 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": "reports/lighthouse" }
+  }
+}

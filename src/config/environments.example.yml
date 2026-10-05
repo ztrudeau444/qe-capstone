@@ -1,0 +1,18 @@
+# Environment configuration. Copy to environments.yml — which is gitignored —
+# or better, read these from environment variables in CI.
+#
+# Nothing secret goes in this file, ever. Week 0 §5 covers where secrets live.
+
+local:
+  base_url: http://localhost:8080
+  db_url: postgresql://qe:qe@localhost:5432/qe
+  timeout_seconds: 10
+
+ci:
+  base_url: http://localhost:8080
+  db_url: ${DB_URL}
+  timeout_seconds: 30
+
+staging:
+  base_url: ${STAGING_URL}
+  timeout_seconds: 30

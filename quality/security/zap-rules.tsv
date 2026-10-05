@@ -1,0 +1,21 @@
+# ZAP baseline rule configuration.
+#
+# Columns: RULE_ID	ACTION	COMMENT
+# ACTION is one of WARN, FAIL, IGNORE.
+#
+# Every IGNORE needs a reason and an owner. A suppression with no justification
+# is how a security backlog quietly becomes a graveyard — Week 3 §4.6.
+#
+10015	FAIL	Incomplete or no cache-control header
+10020	FAIL	Missing anti-clickjacking header
+10021	FAIL	X-Content-Type-Options header missing
+10035	FAIL	Strict-Transport-Security header not set
+10038	FAIL	Content Security Policy header not set
+10063	FAIL	Permissions policy header not set
+40018	FAIL	SQL injection
+40012	FAIL	Cross site scripting (reflected)
+40014	FAIL	Cross site scripting (persistent)
+90022	WARN	Application error disclosure
+#
+# Example of a justified ignore — delete this line, it is here as a pattern:
+# 10096	IGNORE	Timestamp disclosure — build metadata, no security value. owner: you@example.com, review: 2026-12-01

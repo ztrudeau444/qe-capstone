@@ -1,0 +1,20 @@
+[project]
+name = "qe-starter"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["src/tests"]
+python_files = ["test_*.py", "*_test.py"]
+# Markers keep the pipeline stages honest: each stage runs one slice.
+markers = [
+    "unit: fast, no I/O, no network",
+    "integration: touches a database, queue or another service",
+    "e2e: drives the running system end to end",
+    "smoke: the two or three checks that prove a deploy is alive",
+]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]

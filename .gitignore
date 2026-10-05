@@ -1,0 +1,42 @@
+# build output
+target/
+build/
+bin/
+obj/
+dist/
+*.class
+*.jar
+*.dll
+*.pyc
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+
+# reports — generated, never committed
+reports/
+src/config/environments.yml
+coverage/
+.coverage
+htmlcov/
+*.xml.bak
+allure-results/
+allure-report/
+.scannerwork/
+
+# local secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yml
+
+# editors / OS
+.idea/
+.vs/
+.vscode/
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db

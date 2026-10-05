@@ -1,0 +1,16 @@
+# Week 1
+pytest==8.3.4
+pytest-cov==6.0.0
+
+# Week 2 — integration and E2E
+requests==2.32.3
+responses==0.25.3
+playwright==1.49.1
+pytest-playwright==0.6.2
+testcontainers==4.9.0
+
+# Week 3 — accessibility from Python (k6 and ZAP are run as their own tools)
+axe-playwright-python==0.1.4
+
+# Week 4 — reporting
+allure-pytest==2.13.5

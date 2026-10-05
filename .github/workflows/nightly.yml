@@ -1,0 +1,60 @@
+# Long-running checks that must not sit in the pull-request path.
+#
+# Week 3 §3 asks for a soak test. A soak belongs here, not in ci.yml: a gate
+# people wait on is a gate people learn to skip.
+
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'      # 06:00 UTC, weekdays
+  workflow_dispatch:
+
+jobs:
+  soak:
+    name: Soak test
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+      - uses: grafana/setup-k6-action@v1
+      - run: docker compose up -d --wait
+      - name: Soak
+        env:
+          BASE_URL: http://localhost:8080
+        run: k6 run quality/performance/stress.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: soak-report
+          path: reports/
+          if-no-files-found: ignore
+
+  mutation:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - run: pip install pyyaml     # setup-profile has not run yet in this job
+      - id: gate
+        run: echo "on=$(python3 -c "import yaml;print(str(yaml.safe_load(open('quality/thresholds.yml'))['mutation']['enabled']).lower())")" >> "$GITHUB_OUTPUT"
+      - id: p
+        run: echo "profile=$(tr -d '[:space:]' < .qe-profile)" >> "$GITHUB_OUTPUT"
+      - if: steps.gate.outputs.on == 'true'
+        uses: ./.github/actions/setup-profile
+        with:
+          profile: ${{ steps.p.outputs.profile }}
+      # Mutation tooling is per-language and only the Java profile ships it.
+      # Saying so beats hard-coding `profile: java` and letting a Python learner
+      # watch a Maven job fail nightly for a reason nobody ever explains.
+      - if: steps.gate.outputs.on == 'true' && steps.p.outputs.profile != 'java'
+        run: |
+          echo "::notice::Mutation testing ships for the Java profile only."
+          echo "For python see mutmut or cosmic-ray; for .NET see Stryker.NET."
+      - if: steps.gate.outputs.on == 'true' && steps.p.outputs.profile == 'java'
+        run: |
+          MIN=$(python3 -c "import yaml;print(yaml.safe_load(open('quality/thresholds.yml'))['mutation']['score_minimum'])")
+          mvn -B -ntp -f profiles/java/pom.xml test-compile \
+            org.pitest:pitest-maven:mutationCoverage \
+            -DmutationThreshold="$MIN"

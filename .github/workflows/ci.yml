@@ -1,0 +1,418 @@
+# The eight-stage pipeline.
+#
+#   Build → Test → Analyze → LoadTest → Security → A11y → Deploy → Smoke
+#     W2      W2      W2         W3        W3       W3      W4      W4
+#
+# Every stage is present from day one. Stages you have not reached read their
+# `enabled` flag from quality/thresholds.yml and skip until you turn them on.
+# You should be able to see the shape of the finished pipeline in Week 1 even
+# though only three stages do anything.
+#
+# Action versions are pinned to major tags. Check them once a term — see
+# docs/pipeline.md.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ------------------------------------------------------------------ config
+  # Read thresholds.yml once and hand the values to every other job, so no
+  # number is written twice.
+  config:
+    name: Read thresholds
+    runs-on: ubuntu-latest
+    outputs:
+      profile:       ${{ steps.read.outputs.profile }}
+      coverage_enabled: ${{ steps.read.outputs.coverage_enabled }}
+      maintainability_enabled: ${{ steps.read.outputs.maintainability_enabled }}
+      coverage_min:  ${{ steps.read.outputs.coverage_min }}
+      branch_min:    ${{ steps.read.outputs.branch_min }}
+      snyk_severity: ${{ steps.read.outputs.snyk_severity }}
+      perf_enabled:  ${{ steps.read.outputs.perf_enabled }}
+      perf_p95:      ${{ steps.read.outputs.perf_p95 }}
+      perf_err:      ${{ steps.read.outputs.perf_err }}
+      perf_vus:      ${{ steps.read.outputs.perf_vus }}
+      perf_ramp:     ${{ steps.read.outputs.perf_ramp }}
+      perf_steady:   ${{ steps.read.outputs.perf_steady }}
+      sec_enabled:   ${{ steps.read.outputs.sec_enabled }}
+      a11y_enabled:  ${{ steps.read.outputs.a11y_enabled }}
+      a11y_min:      ${{ steps.read.outputs.a11y_min }}
+      a11y_max_critical: ${{ steps.read.outputs.a11y_max_critical }}
+      a11y_max_serious:  ${{ steps.read.outputs.a11y_max_serious }}
+      deploy_enabled: ${{ steps.read.outputs.deploy_enabled }}
+    steps:
+      - uses: actions/checkout@v6
+      - run: pip install pyyaml     # this job runs before setup-profile
+      - id: read
+        shell: bash
+        run: |
+          y() { python3 -c "import sys,yaml;d=yaml.safe_load(open('quality/thresholds.yml'));print(eval(sys.argv[1],{},{'d':d}))" "$1"; }
+          {
+            echo "profile=$(tr -d '[:space:]' < .qe-profile)"
+            echo "coverage_enabled=$(y "str(d['coverage']['enabled']).lower()")"
+            echo "maintainability_enabled=$(y "str(d['maintainability']['enabled']).lower()")"
+            echo "coverage_min=$(y "d['coverage']['line_minimum']")"
+            echo "branch_min=$(y "d['coverage']['branch_minimum']")"
+            # 0 tolerated highs means gate Snyk at high, otherwise critical
+            echo "snyk_severity=$(y "'high' if d['security']['max_high'] == 0 else 'critical'")"
+            echo "perf_enabled=$(y "str(d['performance']['enabled']).lower()")"
+            echo "perf_p95=$(y "d['performance']['p95_ms']")"
+            echo "perf_err=$(y "d['performance']['error_rate']")"
+            echo "perf_vus=$(y "d['performance']['workload']['virtual_users']")"
+            echo "perf_ramp=$(y "d['performance']['workload']['ramp_up']")"
+            echo "perf_steady=$(y "d['performance']['workload']['steady']")"
+            echo "sec_enabled=$(y "str(d['security']['enabled']).lower()")"
+            echo "a11y_enabled=$(y "str(d['accessibility']['enabled']).lower()")"
+            echo "a11y_min=$(y "d['accessibility']['lighthouse_minimum']")"
+            echo "a11y_max_critical=$(y "d['accessibility']['max_critical_violations']")"
+            echo "a11y_max_serious=$(y "d['accessibility']['max_serious_violations']")"
+            echo "deploy_enabled=$(y "str(d['deploy']['enabled']).lower()")"
+          } >> "$GITHUB_OUTPUT"
+
+  # ------------------------------------------------------------- 1. Build
+  build:
+    name: 1 · Build
+    needs: config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-profile
+        with:
+          profile: ${{ needs.config.outputs.profile }}
+      - run: ./scripts/qe.sh build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            target/*.jar
+            bin/Release/**
+            dist/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # -------------------------------------------------------------- 2. Test
+  test:
+    name: 2 · Test
+    needs: [config, build]
+    runs-on: ubuntu-latest
+    # Week 2 §1: integration tests need a real database, not a mock.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: qe
+          POSTGRES_PASSWORD: qe
+          POSTGRES_DB: qe
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U qe"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DB_URL: postgresql://qe:qe@localhost:5432/qe
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-profile
+        with:
+          profile: ${{ needs.config.outputs.profile }}
+      - run: ./scripts/qe.sh test
+      - name: Publish test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            reports/**
+            target/site/jacoco/**
+            target/surefire-reports/**
+          if-no-files-found: ignore
+
+  # ----------------------------------------------------------- 3. Analyze
+  analyze:
+    name: 3 · Analyze
+    needs: [config, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0        # Sonar needs history to attribute new code
+      - uses: ./.github/actions/setup-profile
+        with:
+          profile: ${{ needs.config.outputs.profile }}
+      # The coverage report comes from the Test job, which has the database.
+      # This step used to be `./scripts/qe.sh test` — re-running the whole suite
+      # HERE, in a job with no `services:` block and no DB_URL, so every
+      # integration test that passed in stage 2 failed in stage 3 and the
+      # failure was attributed to Analyze. It also doubled pipeline time against
+      # the ten-minute PR target in docs/pipeline.md.
+      - name: Fetch the coverage report from the Test stage
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: .
+        continue-on-error: true   # first run of a new repo has no artifact yet
+
+      - name: SonarQube Cloud analysis
+        if: needs.config.outputs.maintainability_enabled == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ vars.SONAR_ORG }}
+        run: ./scripts/qe.sh analyze
+      # This used to print four lines and pass. Week 2's exit gate asks for
+      # "a failing run that proves the gate bites", and a stage that cannot
+      # fail cannot produce one. It now reads the coverage report and exits
+      # non-zero below the threshold; the SonarQube Cloud Quality Gate, which
+      # the analyze step above waits for, is the second enforcement point.
+      # coverage.enabled is a Week 2 switch, and until this guard existed it was
+      # a threshold nothing read — so the gate fired on the Week 0 run, three
+      # documents promised coverage was "measured, not gated" until Week 2, and
+      # Week 0's own exit gate ("one green pipeline run") was unachievable as
+      # shipped. Turning the stage on is now the deliberate act the file's
+      # header says it is.
+      - name: Enforce the coverage gate
+        if: needs.config.outputs.coverage_enabled == 'true'
+        shell: bash
+        env:
+          COVERAGE_MIN: ${{ needs.config.outputs.coverage_min }}
+          BRANCH_MIN: ${{ needs.config.outputs.branch_min }}
+        run: ./scripts/check-coverage.sh
+
+      - name: Coverage gate is off
+        if: needs.config.outputs.coverage_enabled != 'true'
+        run: |
+          echo "::notice::coverage.enabled is false in quality/thresholds.yml."
+          echo "Coverage is measured but not gated. Turn it on in Week 2 §4."
+
+  # ---------------------------------------------------------- 4. LoadTest
+  loadtest:
+    name: 4 · LoadTest
+    needs: [config, analyze]
+    if: needs.config.outputs.perf_enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: grafana/setup-k6-action@v1
+      - name: Start the system under test
+        run: |
+          docker compose up -d --wait
+      - name: Load test
+        env:
+          BASE_URL: http://localhost:8080
+          P95_MS: ${{ needs.config.outputs.perf_p95 }}
+          ERROR_RATE: ${{ needs.config.outputs.perf_err }}
+          VUS: ${{ needs.config.outputs.perf_vus }}
+          RAMP_UP: ${{ needs.config.outputs.perf_ramp }}
+          STEADY: ${{ needs.config.outputs.perf_steady }}
+        run: |
+          mkdir -p reports        # gitignored, so absent on a fresh checkout
+          k6 run quality/performance/load.js --summary-export=reports/k6-summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-test-report
+          path: reports/k6-summary.json
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------- 5. Security
+  security:
+    name: 5 · Security
+    needs: [config, analyze]
+    if: needs.config.outputs.sec_enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      # Dependencies (SCA) — what you imported
+      - name: Snyk dependency scan
+        uses: snyk/actions/setup@0.4.0     # pinned, per the rule at the top
+      - env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        # No `|| true`. A gate that cannot fail is worse than no gate,
+        # because it reassures. Severity comes from thresholds.yml like
+        # every other number in this file.
+        run: snyk test --severity-threshold=${{ needs.config.outputs.snyk_severity }} --policy-path=quality/security/.snyk
+
+      # Running application (DAST) — what you deployed
+      - name: Start the system under test
+        run: docker compose up -d --wait
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: http://localhost:8080
+          rules_file_name: quality/security/zap-rules.tsv
+          cmd_options: '-a'
+          fail_action: true
+
+  # -------------------------------------------------------------- 6. A11y
+  a11y:
+    name: 6 · Accessibility
+    needs: [config, analyze]
+    if: needs.config.outputs.a11y_enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install -g @axe-core/cli lighthouse pa11y-ci
+      - name: Start the system under test
+        run: docker compose up -d --wait
+      - name: axe-core audit
+        run: |
+          mkdir -p reports
+          # No --exit. That fails on ANY violation, which is stricter than the
+          # threshold this program declares and is not read from thresholds.yml
+          # at all. Save the report, then judge it against the declared limits.
+          axe http://localhost:8080 \
+            --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
+            --save reports/axe.json
+          # No `|| true` here either. Without --exit, axe returns 0 even when it
+          # finds violations, so the only thing `|| true` could still swallow is
+          # axe itself failing — an unreachable page, a crashed browser — which
+          # is exactly the case that should stop the build.
+          python3 scripts/check-a11y.py reports/axe.json
+        env:
+          MAX_CRITICAL: ${{ needs.config.outputs.a11y_max_critical }}
+          MAX_SERIOUS: ${{ needs.config.outputs.a11y_max_serious }}
+      - name: pa11y — the WCAG 2.0 AA rule sweep
+        run: |
+          # pa11y-ci was installed by the step above and never called, and
+          # quality/accessibility/pa11y.json was configuration nothing read.
+          # Both now do their job. This is the WCAG 2.0 sweep; the axe step
+          # above carries the 2.1 criteria.
+          pa11y-ci --config quality/accessibility/pa11y.json || {
+            echo "::error::pa11y reported WCAG 2.0 AA failures"; exit 1; }
+      - name: Lighthouse accessibility score
+        run: |
+          # The score gate lives in thresholds.yml and is applied below, which
+          # is why quality/accessibility/lighthouserc.json no longer carries a
+          # second copy of the number.
+          lighthouse http://localhost:8080 \
+            --only-categories=accessibility \
+            --chrome-flags="--headless --no-sandbox" \
+            --output=json --output-path=reports/lighthouse.json
+          SCORE=$(python3 -c "import json;print(int(json.load(open('reports/lighthouse.json'))['categories']['accessibility']['score']*100))")
+          MIN=${{ needs.config.outputs.a11y_min }}
+          echo "Accessibility score: $SCORE (gate: >= $MIN)"
+          [ "$SCORE" -ge "$MIN" ] || { echo "::error::Accessibility $SCORE is below the $MIN gate"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: reports/
+          if-no-files-found: ignore
+
+  # ------------------------------------------------------------- 7. Deploy
+  deploy:
+    name: 7 · Deploy
+    # build, test and analyze belong in this list. Without them, a failed
+    # test SKIPS the Week 3 stages rather than failing them, the guard below
+    # sees no failure among its needs, and the pipeline deploys a build whose
+    # tests did not pass.
+    needs: [config, build, test, analyze, loadtest, security, a11y]
+    # Run when the earlier gates passed OR were legitimately skipped, but never
+    # when one of them actually failed.
+    if: |
+      always() &&
+      needs.config.outputs.deploy_enabled == 'true' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build the image
+        run: docker build -t ${{ github.repository }}:${{ github.sha }} .
+      - name: Deploy to staging
+        run: |
+          echo "Replace this with your real deploy."
+          echo "It must be reproducible and triggered by the pipeline, not by you."
+          echo "Registry push, compose stack, or cloud service — your choice."
+
+  # -------------------------------------------------------------- 8. Smoke
+  smoke:
+    name: 8 · Smoke
+    needs: [config, deploy]
+    if: needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: grafana/setup-k6-action@v1
+      - name: Smoke the deployed instance
+        env:
+          BASE_URL: ${{ vars.STAGING_URL }}
+        run: k6 run quality/performance/smoke.js
+
+  # --------------------------------------------------------------- summary
+  summary:
+    name: Quality summary
+    needs: [config, build, test, analyze, loadtest, security, a11y, deploy, smoke]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      # This job used to end here: eight results read, eight results printed,
+      # nothing inspected. Green on a fully red pipeline, and the most
+      # attractive job name in the workflow to put behind branch protection.
+      # The step below makes it a gate; the step above it stays a report.
+      - name: Write the run summary
+        shell: bash
+        run: |
+          {
+            echo "## Quality gates"
+            echo
+            echo "| Stage | Result |"
+            echo "|---|---|"
+            echo "| 1 Build | ${{ needs.build.result }} |"
+            echo "| 2 Test | ${{ needs.test.result }} |"
+            echo "| 3 Analyze | ${{ needs.analyze.result }} |"
+            echo "| 4 LoadTest | ${{ needs.loadtest.result }} |"
+            echo "| 5 Security | ${{ needs.security.result }} |"
+            echo "| 6 Accessibility | ${{ needs.a11y.result }} |"
+            echo "| 7 Deploy | ${{ needs.deploy.result }} |"
+            echo "| 8 Smoke | ${{ needs.smoke.result }} |"
+            echo
+            echo "\`skipped\` means the gate is off in \`quality/thresholds.yml\`."
+            echo "Record the date you turn each one on — that is your trend line."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # A stage that is SKIPPED is fine — that is how the pipeline carries all
+      # eight from Week 0 while only the ones you have reached do any work.
+      # A stage that FAILED or was CANCELLED is not.
+      - name: Fail the run if any stage failed
+        shell: bash
+        run: |
+          bad=0
+          # config first, and it matters more than the rest: if thresholds.yml
+          # is malformed every downstream job is SKIPPED, not failed, so a loop
+          # that omits config counts zero failures and reports success on a
+          # pipeline that never ran. That is the state branch protection is
+          # most likely to be pointed at.
+          for r in "${{ needs.config.result }}" "${{ needs.build.result }}" "${{ needs.test.result }}" \
+                   "${{ needs.analyze.result }}" "${{ needs.loadtest.result }}" \
+                   "${{ needs.security.result }}" "${{ needs.a11y.result }}" \
+                   "${{ needs.deploy.result }}" "${{ needs.smoke.result }}"; do
+            case "$r" in
+              failure|cancelled) bad=$((bad + 1)) ;;
+            esac
+          done
+          if [ "$bad" -gt 0 ]; then
+            echo "::error::$bad stage(s) failed or were cancelled."
+            exit 1
+          fi
+          echo "No stage failed."

@@ -1,0 +1,46 @@
+# One place that knows how to install a toolchain, so ci.yml does not.
+name: Set up language profile
+description: Install the toolchain for the active .qe-profile
+
+inputs:
+  profile:
+    description: java | python | dotnet | cpp
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - if: inputs.profile == 'java'
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: '17'
+        cache: maven
+
+    - if: inputs.profile == 'python'
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+
+    - if: inputs.profile == 'dotnet'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # C++ needs an explicit step rather than a setup- action. The runner
+    # already has g++ and cmake; it does NOT have gcovr, which is what
+    # profiles/cpp/analyze.sh calls to produce reports/coverage.xml. Without
+    # this the coverage gate has nothing to read and the failure looks like a
+    # coverage failure rather than a missing tool.
+    - if: inputs.profile == 'cpp'
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends cmake g++
+        python3 -m pip install --quiet gcovr
+
+    - shell: bash
+      run: |
+        python3 -m pip install --quiet pyyaml
+        chmod +x scripts/*.sh profiles/*/*.sh

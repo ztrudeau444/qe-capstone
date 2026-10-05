@@ -1,0 +1,21 @@
+{
+  "//": "Pa11y CI configuration. Week 3 §5. Add one entry per page a real user reaches.",
+  "defaults": {
+    "//standard": "pa11y accepts WCAG2A, WCAG2AA or WCAG2AAA only — it drives HTML_CodeSniffer, which implements the WCAG 2.0 rule set. Any other value is rejected before a single page is tested. The 2.1 criteria are covered by the axe-core step in the same job.",
+    "standard": "WCAG2AA",
+    "timeout": 30000,
+    "wait": 500,
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-dev-shm-usage"]
+    },
+    "//threshold": "0 means any violation fails. Raise it only with a note in docs/NFT-Strategy.md.",
+    "threshold": 0,
+    "hideElements": "",
+    "ignore": []
+  },
+  "urls": [
+    "http://localhost:8080/",
+    "http://localhost:8080/login",
+    "http://localhost:8080/items"
+  ]
+}

@@ -1,0 +1,103 @@
+# Every quality gate in the program, in one file.
+#
+# Two rules, and they are the whole point of this file:
+#
+#   1. A threshold is written here ONCE and read by whatever enforces it.
+#      If a number appears in both this file and a workflow, one of them is
+#      already wrong and nobody knows which.
+#
+#   2. `enabled: false` means the stage is SKIPPED — it does not run at all.
+#      That is how the pipeline carries all eight stages from the Week 0 run
+#      while only the ones you have reached do any work. Turning a stage on
+#      is a deliberate act with a date against it.
+
+meta:
+  # Bump when you change a threshold, and say why in docs/refactor-log.md.
+  revision: 1
+  owner: "your.name@example.com"
+
+coverage:
+  # false until Week 2 §4, where turning it on IS the exercise. The readers,
+  # the workbooks and the Week 0 exit gate all say coverage is measured rather
+  # than gated before then; this is the switch that makes that true. Flip it
+  # and the Analyze stage starts failing below the numbers underneath.
+  enabled: false           # Week 2
+  line_minimum: 80         # percent
+  branch_minimum: 60
+  # Where each profile writes its report. The Analyze stage reads these.
+  report:
+    java: target/site/jacoco/jacoco.xml
+    python: reports/coverage.xml
+    dotnet: reports/**/coverage.opencover.xml
+    cpp: reports/coverage.xml        # gcovr, Cobertura format
+
+maintainability:
+  # false until Week 2. The SonarQube Cloud analysis step reads this, so a
+  # learner with no SONAR_TOKEN yet gets a skipped step rather than a red
+  # stage on their very first push.
+  enabled: false           # Week 2
+  minimum_grade: A         # SonarQube Cloud rating
+  max_new_code_smells: 0
+
+mutation:
+  enabled: false           # Week 2 §4.7 — optional, expensive
+  score_minimum: 60
+
+performance:               # Week 3
+  enabled: false
+  p95_ms: 500
+  # p99 is REPORTED, not gated. k6's default summary does not even emit p(99)
+  # without `summaryTrendStats`, and nothing in the pipeline reads this number.
+  # It is here because Week 3 asks for a p50/p95/p99 dashboard and this is the
+  # value to chart a line against.
+  p99_ms: 1200             # reported, not enforced
+  error_rate: 0.01         # 1%
+  workload:
+    virtual_users: 50
+    ramp_up: 1m
+    steady: 3m
+    # ramp_down is read by load.js as __ENV.RAMP_DOWN, but ci.yml does not pass
+    # it — so the JS fallback ('1m') is what actually runs, and it agrees with
+    # this line by coincidence rather than by wiring. Change this value and
+    # nothing happens. Fixing it is a two-line exercise in Week 3 §1.0.
+    ramp_down: 1m            # not yet passed by ci.yml — see Week 3 §1.0
+
+security:                  # Week 3
+  enabled: false
+  # NOTE which of these the pipeline actually reads. ci.yml derives Snyk's
+  # severity threshold from max_high alone:
+  #     'high' if max_high == 0 else 'critical'
+  # So with max_high: 0 the gate is `--severity-threshold=high`, which is
+  # STRICTER than "0 critical". Set max_critical to something other than 0 and
+  # nothing changes; it is documentation, not a control.
+  max_critical: 0          # documentation — max_high is what drives the gate
+  max_high: 0
+  # Findings you have triaged and accepted. Each needs an owner and a date —
+  # an unexplained entry here is how a suppression list becomes a graveyard.
+  accepted:
+    # - id: CVE-0000-00000
+    #   reason: "Not reachable — no code path calls the affected method"
+    #   accepted_by: "your.name@example.com"
+    #   review_by: 2026-12-01
+
+accessibility:             # Week 3
+  enabled: false
+  # pa11y accepts WCAG2A / WCAG2AA / WCAG2AAA only. The axe-core step in the
+  # same job carries the WCAG 2.1 criteria; this value drives pa11y.
+  standard: WCAG2AA
+  lighthouse_minimum: 95
+  max_critical_violations: 0
+  max_serious_violations: 0
+
+deploy:                    # Week 4
+  enabled: false
+  # environment and smoke_timeout_seconds used to live here and were read by
+  # nothing — ci.yml hard-codes `environment: staging` and `timeout-minutes: 5`
+  # (300 s, against the 120 stated here). Two numbers, 2.5x apart, both
+  # claiming to be the smoke timeout. The workflow is the one that runs, so the
+  # duplicates are gone rather than the enforcement.
+  #
+  # If you want them here, wire them: add them to the `config` job's outputs
+  # and read them in the deploy and smoke jobs. Rule 1 of this file is that a
+  # threshold is read by whatever enforces it — a key nothing reads is worse
+  # than no key, because it looks like configuration.

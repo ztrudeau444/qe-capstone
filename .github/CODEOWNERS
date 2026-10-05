@@ -1,0 +1,11 @@
+# Every file has an owner. Replace with real handles before you rely on this.
+#
+# Week 2 §5 argues that governance is what stops a framework diverging across
+# a team. This file is the cheapest form of it.
+
+*                       @your-github-handle
+
+# The gates themselves need a second pair of eyes — lowering a threshold
+# should never be a solo decision.
+/quality/thresholds.yml @your-github-handle @your-lead-handle
+/.github/workflows/     @your-github-handle @your-lead-handle

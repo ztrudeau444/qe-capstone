@@ -1,0 +1,16 @@
+# Snyk policy file.
+#
+# Ignores are temporary by construction: each carries an expiry. When it lapses
+# the finding comes back and someone has to decide again. That is the point.
+
+version: v1.25.0
+
+ignore: {}
+  # 'SNYK-JS-EXAMPLE-1234567':
+  #   - '*':
+  #       reason: >-
+  #         Not reachable — the vulnerable method is not called from any code
+  #         path in this service. Verified by <name> on 2026-08-24.
+  #       expires: 2026-12-01T00:00:00.000Z
+
+patch: {}
