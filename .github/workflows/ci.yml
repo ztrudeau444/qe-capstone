@@ -326,23 +326,45 @@ jobs:
     # tests did not pass.
     needs: [config, build, test, analyze, loadtest, security, a11y]
     # Run when the earlier gates passed OR were legitimately skipped, but never
-    # when one of them actually failed.
+    # when one of them actually failed. Only pushes to main deploy; pull
+    # requests never do.
     if: |
       always() &&
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main' &&
       needs.config.outputs.deploy_enabled == 'true' &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment: staging
     steps:
       - uses: actions/checkout@v6
       - name: Build the image
         run: docker build -t ${{ github.repository }}:${{ github.sha }} .
-      - name: Deploy to staging
+      - name: Deploy to staging (Render)
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          echo "Replace this with your real deploy."
-          echo "It must be reproducible and triggered by the pipeline, not by you."
-          echo "Registry push, compose stack, or cloud service — your choice."
+          RESPONSE=$(curl -fsS -X POST "$HOOK")
+          DEPLOY_ID=$(echo "$RESPONSE" | jq -r '.deploy.id')
+          SERVICE_ID=$(echo "$HOOK" | sed -E 's#.*/deploy/(srv-[^?]+).*#\1#')
+          if [ -z "$DEPLOY_ID" ] || [ "$DEPLOY_ID" = "null" ]; then
+            echo "::error::Render did not return a deploy ID: $RESPONSE"; exit 1
+          fi
+          echo "Render deploy $DEPLOY_ID started"
+          for i in $(seq 1 60); do
+            STATUS=$(curl -fsS -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID" | jq -r '.status')
+            echo "Status: $STATUS"
+            case "$STATUS" in
+              live) echo "Deploy is live."; exit 0 ;;
+              *failed*|canceled|deactivated) echo "::error::Render deploy ended as $STATUS"; exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo "::error::Timed out waiting for Render"; exit 1
 
   # -------------------------------------------------------------- 8. Smoke
   smoke:
