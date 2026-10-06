@@ -2,7 +2,6 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 mkdir -p reports
-python3 -m pip install --quiet -r profiles/python/requirements.txt
 # -c names the profile's own config. Without it pytest reads no config from
 # here at all, so branch coverage, testpaths and --strict-markers — every
 # one of them set in profiles/python/pyproject.toml — silently do not apply,
