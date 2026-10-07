@@ -147,20 +147,25 @@ class TalkPatch(BaseModel):
     score: Optional[int] = None
 
 
-@app.patch("/api/talks/{talk_id}")
-def patch_talk(talk_id: int, body: TalkPatch):
-    """Reviewer update of a talk's status and/or score."""
+def validate_talk_patch(body: TalkPatch) -> None:
+    """The review rules. Raises a 400 for the first rule broken."""
     if body.status is not None and body.status not in STATUSES:
         raise HTTPException(400, f"status must be one of {sorted(STATUSES)}")
     if body.score is not None and not (1 <= body.score <= 10):
         raise HTTPException(400, "score must be between 1 and 10")
+    if body.status is None and body.score is None:
+        raise HTTPException(400, "nothing to update")
+
+
+@app.patch("/api/talks/{talk_id}")
+def patch_talk(talk_id: int, body: TalkPatch):
+    """Reviewer update of a talk's status and/or score."""
+    validate_talk_patch(body)
     sets, args = [], []
     if body.status is not None:
         sets.append("status = %s"); args.append(body.status)
     if body.score is not None:
         sets.append("score = %s"); args.append(body.score)
-    if not sets:
-        raise HTTPException(400, "nothing to update")
     args.append(talk_id)
     with db() as c:
         r = c.execute(f"UPDATE talks SET {', '.join(sets)} WHERE id = %s RETURNING *",
