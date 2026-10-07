@@ -115,6 +115,8 @@ def create_talk(body: NewTalk):
     """Handler."""
     if not body.title.strip():
         raise HTTPException(400, "title is required")
+    if len(body.title) > 200:
+        raise HTTPException(400, "title must be 200 characters or fewer")
     if body.track not in TRACKS:
         raise HTTPException(400, f"track must be one of {sorted(TRACKS)}")
     with db() as c:
