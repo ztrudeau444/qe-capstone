@@ -112,15 +112,20 @@ class NewTalk(BaseModel):
     track: str
 
 
-@app.post("/api/talks", status_code=201)
-def create_talk(body: NewTalk):
-    """Submit a new talk. Rule-breaking input is rejected before anything is saved."""
+def validate_new_talk(body: NewTalk) -> None:
+    """The submission rules. Raises a 400 for the first rule broken."""
     if not body.title.strip():
         raise HTTPException(400, "title is required")
     if len(body.title) > MAX_TITLE_LENGTH:
         raise HTTPException(400, f"title must be {MAX_TITLE_LENGTH} characters or fewer")
     if body.track not in TRACKS:
         raise HTTPException(400, f"track must be one of {sorted(TRACKS)}")
+
+
+@app.post("/api/talks", status_code=201)
+def create_talk(body: NewTalk):
+    """Submit a new talk. Rule-breaking input is rejected before anything is saved."""
+    validate_new_talk(body)
     with db() as c:
         if not c.execute("SELECT 1 FROM speakers WHERE id = %s",
                          (body.speaker_id,)).fetchone():
