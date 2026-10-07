@@ -1,5 +1,5 @@
-<!-- GENERATED from the canonical Carry-Forward Ledger in the learner
-     materials. Do not hand-edit: edit that file and re-run gen_docs.py. -->
+<!-- Learner's copy, filled in at the end of each week. Originally generated
+     from the canonical Carry-Forward Ledger in the learner materials. -->
 
 # What this is
 
@@ -17,10 +17,10 @@ Two things make it worth taking seriously.
 
 | | |
 |---|---|
-| **Learner** | |
-| **System Under Test** | |
-| **Repository URL** | |
-| **Language / stack** | |
+| **Learner** | Zoe Trudeau |
+| **System Under Test** | TalkDesk (reference system, Python) |
+| **Repository URL** | https://github.com/ztrudeau444/qe-capstone |
+| **Language / stack** | Python 3.12 · FastAPI · PostgreSQL |
 | **Instructor** | |
 | **Cohort start date** | |
 
@@ -34,20 +34,20 @@ Two things make it worth taking seriously.
 
 | ☐ | Item | Record |
 |---|---|---|
-| ☐ | Repository on `main`, unit suite green | Commits: ______ |
-| ☐ | Container builds and runs | Build time: ______ |
-| ☐ | `docs/acceptance-criteria.md` written | Criteria: ______ (F: ____ NF: ____) |
-| ☐ | One strict TDD cycle, three separate commits | Commit SHAs: ______________________ |
-| ☐ | Unit suite covering core logic | Tests: ______ Runtime: ______ s |
-| ☐ | **Coverage baseline recorded** | ______ % |
-| ☐ | `docs/refactor-log.md` | Refactors: ______ **(gate 2)** |
-| ☐ | Traceability template filled, gaps visible | Criteria with a test: ____ of ____ |
+| ☒ | Repository on `main`, unit suite green | Commits: 27 |
+| ☒ | Container builds and runs | Build time: 11 s |
+| ☒ | `docs/acceptance-criteria.md` written | Criteria: 15 (F: 12 NF: 3) |
+| ☒ | One strict TDD cycle, three separate commits | Commit SHAs: `05fe645` (red), `9631f9b` (green), `ab25830` (refactor) |
+| ☒ | Unit suite covering core logic | Tests: 8 Runtime: 1.4 s |
+| ☒ | **Coverage baseline recorded** | 90 % (TalkDesk's shipped suite) |
+| ☒ | `docs/refactor-log.md` | Refactors: 5 **(gate 2)** |
+| ☒ | Traceability template filled, gaps visible | Criteria with a test: 6 of 15 |
 
 **Carried into Week 2 (anything unticked, and why):**
 
-`________________________________________________________________`
+Coverage 55% line / 43% branch, below the gates enforced from Week 2; integration tests for AC-01, 04, 07, 08, 09 will close it. Invalid-status rule has no test (found during R-05). Refactors D-01 and D-02 deferred until integration tests exist.
 
-`________________________________________________________________`
+Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `test_submit_page_renders` also fails). Snyk does not scan `src/talkdesk/requirements.txt`.
 
 **Instructor verification** — date: `__________` initials: `______`
 
@@ -142,19 +142,19 @@ Two things make it worth taking seriously.
 
 | Metric | Week 1 | Week 2 | Week 3 | Week 4 | Gate |
 |---|---|---|---|---|---|
-| Line coverage % | | | | | ≥ 80 |
-| **Branch coverage %** | | | | | **≥ 60** |
+| Line coverage % | 55 | | | | ≥ 80 |
+| **Branch coverage %** | 43 | | | | **≥ 60** |
 | Maintainability grade | — | | | | A |
-| Unit tests | | | | | — |
+| Unit tests | 8 | | | | — |
 | Integration tests | — | | | | — |
 | E2E tests | — | | | | — |
-| Suite runtime (s) | | | | | — |
+| Suite runtime (s) | 1.4 | | | | — |
 | p95 latency (ms) | — | — | | | ≤ 500 |
 | Error rate under load % | — | — | | | < 1 |
 | Critical CVEs | — | — | | | 0 |
 | **High CVEs** | — | — | | | **0** — this is the one `ci.yml` gates on |
 | Accessibility score | — | — | | | ≥ 95 |
-| Criteria covered | ____/____ | ____/____ | ____/____ | ____/____ | 100% F |
+| Criteria covered | 6/15 | ____/____ | ____/____ | ____/____ | 100% F |
 | Pipeline stages green | — | ____/3 | ____/6 | ____/8 | 8 |
 
 ---
