@@ -23,3 +23,29 @@ def test_title_over_200_characters_is_rejected(monkeypatch):
 
     assert error.value.status_code == 400
     assert error.value.detail == "title must be 200 characters or fewer"
+
+
+@pytest.mark.unit
+def test_blank_title_is_rejected(no_database):
+    """AC-02: a title of only spaces is rejected, and no talk is created."""
+    body = NewTalk(speaker_id=27, title="   ", abstract="", track="testing")
+
+    with pytest.raises(HTTPException) as error:
+        create_talk(body)
+
+    assert error.value.status_code == 400
+    assert error.value.detail == "title is required"
+
+
+@pytest.mark.unit
+def test_invalid_track_is_rejected(no_database):
+    """AC-03: an unknown track is rejected, the message lists the allowed
+    tracks, and no talk is created."""
+    body = NewTalk(speaker_id=27, title="A valid title", abstract="", track="cooking")
+
+    with pytest.raises(HTTPException) as error:
+        create_talk(body)
+
+    assert error.value.status_code == 400
+    for track in ("architecture", "culture", "delivery", "testing"):
+        assert track in error.value.detail

@@ -45,8 +45,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | "A title must not be blank" is a rule, checked in the code before the database is touched. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_create_talk.py::test_blank_title_is_rejected` |
+| **Status** | Green |
 
 ### AC-03 — Invalid track is rejected
 
@@ -59,8 +59,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | The list of allowed tracks is a rule held in the code. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_create_talk.py::test_invalid_track_is_rejected` |
+| **Status** | Green |
 
 ### AC-04 — Unknown speaker is rejected
 
@@ -87,8 +87,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | "Scores must be 1–10" is a rule, checked before the database is touched. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_patch_talk.py::test_score_outside_1_to_10_is_rejected` |
+| **Status** | Green |
 
 ### AC-06 — Empty update is rejected
 
@@ -101,8 +101,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | Deciding that an empty update is invalid is logic in the code. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_patch_talk.py::test_empty_update_is_rejected` |
+| **Status** | Green |
 
 ### AC-07 — Listing filters by track
 
@@ -157,8 +157,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | The sign-in check is pure logic in the code and never uses the database. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_login.py::test_correct_password_returns_token, test_wrong_password_is_rejected` |
+| **Status** | Green |
 
 ### AC-11 — Errors never expose internal details (known gap)
 
@@ -228,7 +228,7 @@ criterion is how a defect gets found.
 | **Test layer** | Unit |
 | **Why that layer** | A length limit is a rule, checked in the code before the database is touched. |
 | **Test** | `src/tests/unit/test_create_talk.py::test_title_over_200_characters_is_rejected` |
-| **Status** | Not started |
+| **Status** | Green |
 
 ## Traceability
 
@@ -237,17 +237,17 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | ID | Criterion | Layer | Test | Green |
 |---|---|---|---|---|
 | AC-01 | Valid talk is created | Integration | | ☐ |
-| AC-02 | Blank title rejected | Unit | | ☐ |
-| AC-03 | Invalid track rejected | Unit | | ☐ |
+| AC-02 | Blank title rejected | Unit | test_blank_title_is_rejected | ☒ |
+| AC-03 | Invalid track rejected | Unit | test_invalid_track_is_rejected | ☒ |
 | AC-04 | Unknown speaker rejected | Integration | | ☐ |
-| AC-05 | Score outside 1–10 rejected | Unit | | ☐ |
-| AC-06 | Empty update rejected | Unit | | ☐ |
+| AC-05 | Score outside 1–10 rejected | Unit | test_score_outside_1_to_10_is_rejected | ☒ |
+| AC-06 | Empty update rejected | Unit | test_empty_update_is_rejected | ☒ |
 | AC-07 | List filters by track | Integration | | ☐ |
 | AC-08 | Search is case-insensitive | Integration | | ☐ |
 | AC-09 | Unknown talk ID → 404 | Integration | | ☐ |
-| AC-10 | Reviewer sign-in | Unit | | ☐ |
+| AC-10 | Reviewer sign-in | Unit | test_correct_password_returns_token, test_wrong_password_is_rejected | ☒ |
 | AC-11 | Errors expose no internals (NF, known gap) | Unit | | ☐ |
 | AC-12 | List p95 ≤ 500 ms under load (NF) | System (Week 3) | | ☐ |
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
 | AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
-| AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☐ |
+| AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☒ |
