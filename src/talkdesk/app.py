@@ -1,4 +1,4 @@
-"""Handler."""
+"""TalkDesk: a conference talk-submission desk (the System Under Test)."""
 import os
 import traceback
 import psycopg
@@ -18,7 +18,8 @@ app = FastAPI(title="TalkDesk", docs_url=None, redoc_url=None)
 
 @app.exception_handler(Exception)
 async def verbose_error_handler(request, exc):
-    """Handler."""
+    """Turn any unhandled error into a 500 reply.
+    Known gap (AC-11, D-7): the reply includes internal details."""
     return JSONResponse(
         status_code=500,
         content={"error": type(exc).__name__,
@@ -46,7 +47,7 @@ def health():
 # ────────────────────────────────────────────────────────────── API
 @app.get("/api/talks")
 def list_talks(track: Optional[str] = None, status: Optional[str] = None):
-    """Handler."""
+    """List up to 100 talks, optionally filtered by track and/or status."""
     sql = "SELECT * FROM talks WHERE 1=1"
     args = []
     if track:
@@ -73,7 +74,7 @@ def list_talks(track: Optional[str] = None, status: Optional[str] = None):
 
 @app.get("/api/talks/search")
 def search_talks(q: str = ""):
-    """Handler."""
+    """Find up to 100 talks whose title contains q, ignoring case."""
     with db() as c:
         rows = c.execute(
             "SELECT t.*, s.name AS speaker_name FROM talks t "
@@ -89,7 +90,7 @@ def search_talks(q: str = ""):
 
 @app.get("/api/talks/{talk_id}")
 def get_talk(talk_id: str):
-    """Handler."""
+    """Return one talk in full, with its speaker's details."""
     tid = int(talk_id)                      # deliberately unguarded
     with db() as c:
         r = c.execute("SELECT * FROM talks WHERE id = %s", (tid,)).fetchone()
@@ -111,15 +112,20 @@ class NewTalk(BaseModel):
     track: str
 
 
-@app.post("/api/talks", status_code=201)
-def create_talk(body: NewTalk):
-    """Handler."""
+def validate_new_talk(body: NewTalk) -> None:
+    """The submission rules. Raises a 400 for the first rule broken."""
     if not body.title.strip():
         raise HTTPException(400, "title is required")
     if len(body.title) > MAX_TITLE_LENGTH:
         raise HTTPException(400, f"title must be {MAX_TITLE_LENGTH} characters or fewer")
     if body.track not in TRACKS:
         raise HTTPException(400, f"track must be one of {sorted(TRACKS)}")
+
+
+@app.post("/api/talks", status_code=201)
+def create_talk(body: NewTalk):
+    """Submit a new talk. Rule-breaking input is rejected before anything is saved."""
+    validate_new_talk(body)
     with db() as c:
         if not c.execute("SELECT 1 FROM speakers WHERE id = %s",
                          (body.speaker_id,)).fetchone():
@@ -141,20 +147,25 @@ class TalkPatch(BaseModel):
     score: Optional[int] = None
 
 
-@app.patch("/api/talks/{talk_id}")
-def patch_talk(talk_id: int, body: TalkPatch):
-    """Handler."""
+def validate_talk_patch(body: TalkPatch) -> None:
+    """The review rules. Raises a 400 for the first rule broken."""
     if body.status is not None and body.status not in STATUSES:
         raise HTTPException(400, f"status must be one of {sorted(STATUSES)}")
     if body.score is not None and not (1 <= body.score <= 10):
         raise HTTPException(400, "score must be between 1 and 10")
+    if body.status is None and body.score is None:
+        raise HTTPException(400, "nothing to update")
+
+
+@app.patch("/api/talks/{talk_id}")
+def patch_talk(talk_id: int, body: TalkPatch):
+    """Reviewer update of a talk's status and/or score."""
+    validate_talk_patch(body)
     sets, args = [], []
     if body.status is not None:
         sets.append("status = %s"); args.append(body.status)
     if body.score is not None:
         sets.append("score = %s"); args.append(body.score)
-    if not sets:
-        raise HTTPException(400, "nothing to update")
     args.append(talk_id)
     with db() as c:
         r = c.execute(f"UPDATE talks SET {', '.join(sets)} WHERE id = %s RETURNING *",
@@ -173,7 +184,7 @@ class Login(BaseModel):
 
 @app.post("/api/login")
 def login(body: Login):
-    """Handler."""
+    """Reviewer sign-in: a demo token for an @talkdesk.test address."""
     if body.email.endswith("@talkdesk.test") and body.password == "reviewer":
         return {"token": "talkdesk-demo-token-not-a-credential"}
     raise HTTPException(401, "invalid credentials")
@@ -184,7 +195,7 @@ PAGE = """Handler."""
 
 
 def page(title, body):
-    """Handler."""
+    """Wrap a page body in the shared HTML template."""
     return HTMLResponse(PAGE.format(title=title, body=body))
 
 
@@ -206,7 +217,7 @@ def home():
 
 @app.get("/submit", response_class=HTMLResponse)
 def submit_form():
-    """Handler."""
+    """The talk-submission page."""
     return page("Submit a talk", """Handler.""")
 
 
