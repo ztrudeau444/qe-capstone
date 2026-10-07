@@ -216,6 +216,20 @@ criterion is how a defect gets found.
 | **Test** | |
 | **Status** | Not started — known gap: the home page currently shows only "Handler." |
 
+### AC-15 — Over-long title is rejected
+
+**Given** speaker 27 exists
+**When** a talk is submitted with a title of 201 characters
+**Then** the reply is 400 with the message "title must be 200 characters or fewer", and no talk is created
+
+| | |
+|---|---|
+| **Type** | Functional |
+| **Test layer** | Unit |
+| **Why that layer** | A length limit is a rule, checked in the code before the database is touched. |
+| **Test** | `src/tests/unit/test_create_talk.py::test_title_over_200_characters_is_rejected` |
+| **Status** | Not started |
+
 ## Traceability
 
 Every functional criterion must reach 100% coverage by the Week 4 exit gate.
@@ -236,3 +250,4 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-12 | List p95 ≤ 500 ms under load (NF) | System (Week 3) | | ☐ |
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
 | AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
+| AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☐ |

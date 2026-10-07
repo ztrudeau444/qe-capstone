@@ -14,3 +14,6 @@ axe-playwright-python==0.1.4
 
 # Week 4 — reporting
 allure-pytest==2.13.5
+
+# The System Under Test, so tests can import it
+-r ../../src/talkdesk/requirements.txt

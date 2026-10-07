@@ -11,6 +11,7 @@ from typing import Optional
 DB_URL = os.environ.get("DB_URL", "postgresql://talkdesk:talkdesk@localhost:5432/talkdesk")
 TRACKS = {"testing", "architecture", "delivery", "culture"}
 STATUSES = {"submitted", "accepted", "rejected"}
+MAX_TITLE_LENGTH = 200
 
 app = FastAPI(title="TalkDesk", docs_url=None, redoc_url=None)
 
@@ -115,6 +116,8 @@ def create_talk(body: NewTalk):
     """Handler."""
     if not body.title.strip():
         raise HTTPException(400, "title is required")
+    if len(body.title) > MAX_TITLE_LENGTH:
+        raise HTTPException(400, f"title must be {MAX_TITLE_LENGTH} characters or fewer")
     if body.track not in TRACKS:
         raise HTTPException(400, f"track must be one of {sorted(TRACKS)}")
     with db() as c:
