@@ -1,20 +1,19 @@
 # The environment the pipeline stands up. `docker compose up -d --wait` blocks
-# until every service reports healthy, which is why healthchecks below are not
-# optional: without them the load test starts against a service that is still
-# booting and you measure your own startup time.
+# until every service reports healthy.
+# Ports bind to 127.0.0.1 only: TalkDesk carries deliberate weaknesses and
+# must not be reachable from the network.
 
 services:
   app:
     build: .
-    ports: ['8080:8080']
+    ports: ['127.0.0.1:8080:8080']
     environment:
       DB_URL: postgresql://qe:qe@db:5432/qe
-      SPRING_PROFILES_ACTIVE: test
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8080/health']
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
       interval: 10s
       timeout: 3s
       retries: 10
@@ -26,13 +25,15 @@ services:
       POSTGRES_USER: qe
       POSTGRES_PASSWORD: qe
       POSTGRES_DB: qe
-    ports: ['5432:5432']
+    ports: ['127.0.0.1:5432:5432']
+    volumes:
+      # Runs the schema, then the seed (200 speakers, 50,000 talks), on first start.
+      - ./db:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U qe']
+      test: ['CMD-SHELL', 'pg_isready -U qe -d qe']
       interval: 10s
       timeout: 5s
       retries: 5
     tmpfs:
-      # Test data is disposable. Keeping it in memory makes the suite faster
-      # and makes "it passed because of yesterday's data" impossible.
+      # Test data is disposable: every start begins from the same seed.
       - /var/lib/postgresql/data
