@@ -46,3 +46,14 @@ The tests were restructured into `base/`, `pages/`, `utils/` and `config/`
 - Coverage now measures `src/talkdesk` only (commit `54d09ba`), so the new
   framework code, which the tests use and so would be 100% covered, cannot
   inflate the gate's number.
+
+## Week 2: deferred refactors D-01 and D-02
+
+- R-09 (D-01, shared reply fields) and R-10 (D-02, clear names): 16 tests green
+  before and after: [`deferred-refactors-before.txt`](deferred-refactors-before.txt)
+  · [`deferred-refactors-after.txt`](deferred-refactors-after.txt).
+- **A note on commit `4f7fc30`.** Its message says "refactor log R-09, R-10; D-01
+  and D-02 done", but the refactors had not run yet: a helper script failed to
+  paste, and the commit captured only two test-output files. The refactors are the
+  later commits `refactor(R-09)` and `refactor(R-10)`. The misleading message was
+  left in place rather than rewriting history that had already been pushed.

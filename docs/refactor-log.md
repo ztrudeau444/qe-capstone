@@ -340,14 +340,106 @@ before and after (same evidence as R-06).
 
 ---
 
+## R-09 — One place for the fields every talk reply shares (was D-01)
+
+| | |
+|---|---|
+| **Date** | 2026-10-08 · commit `c5d8449` |
+| **Principle** | DRY |
+| **Trigger** | Deferred item D-01. The block that turns a database row into a reply (`"id": r["id"], "title": r["title"], ...`) was copied into five endpoints, each copy slightly different. It was deferred in Week 1 because no test covered it; the Week 2 integration tests now run all five endpoints. |
+
+**Before**
+
+```python
+return {"id": r["id"], "title": r["title"], "track": r["track"],
+        "status": r["status"], "score": r["score"],
+        "speaker": {"id": r["speaker_id"]},
+        "created_at": r["created_at"].isoformat() + "Z"}
+# ...and four more copies, in list_talks, search_talks, get_talk and patch_talk
+```
+
+**After**
+
+```python
+def talk_fields(row):
+    return {"id": row["id"], "title": row["title"], "track": row["track"],
+            "status": row["status"], "score": row["score"]}
+
+def utc_timestamp(value):
+    return value.isoformat() + "Z"
+
+return {**talk_fields(r),
+        "speaker": {"id": r["speaker_id"]},
+        "created_at": utc_timestamp(r["created_at"])}
+```
+
+**What it bought**
+
+A field every talk reply shares is added or renamed in one place, so the five
+replies can no longer drift apart. One visible difference, checked on purpose:
+in `get_talk` the reply's keys come out in a different order (`abstract` after
+`score`). JSON objects have no order, and the contract test checks the set of
+fields and their types, so nothing that reads the API can tell.
+
+**Tests that proved it was safe**
+
+All 16 green before and after ([`deferred-refactors-before.txt`](evidence/deferred-refactors-before.txt),
+[`deferred-refactors-after.txt`](evidence/deferred-refactors-after.txt)). The five
+endpoints are covered by AC-01, 04, 07, 08, 09, 17 and the contract test. The
+planted N+1 in `list_talks` (D-1) was deliberately left in place for Week 3.
+
+---
+
+## R-10 — Names that say what they hold (was D-02)
+
+| | |
+|---|---|
+| **Date** | 2026-10-08 · commit `10afb06` |
+| **Principle** | Other: meaningful names |
+| **Trigger** | Deferred item D-02. The database code used `r`, `sp`, `c` and `tid`, so a reader had to work out what each one held. Deferred in Week 1 for the same reason as D-01, and unblocked by the same tests. |
+
+**Before**
+
+```python
+tid = int(talk_id)
+with db() as c:
+    r = c.execute("SELECT * FROM talks WHERE id = %s", (tid,)).fetchone()
+    sp = c.execute("SELECT * FROM speakers WHERE id = %s", (r["speaker_id"],)).fetchone()
+```
+
+**After**
+
+```python
+number = int(talk_id)                   # deliberately unguarded
+with db() as conn:
+    talk = conn.execute("SELECT * FROM talks WHERE id = %s", (number,)).fetchone()
+    speaker = conn.execute("SELECT * FROM speakers WHERE id = %s",
+                           (talk["speaker_id"],)).fetchone()
+```
+
+**What it bought**
+
+The code reads as what it does. This matters most in `list_talks`, the code
+Week 3's load testing will put under pressure. Not renamed: `trs` and `t` in
+`home()`, which builds the web page. No test covers that page yet, so renaming
+there would be a change without a safety net. It stays with the web pages, for
+when they work.
+
+**Tests that proved it was safe**
+
+All 16 green before and after (same evidence as R-09). The deliberately
+unguarded `int(talk_id)` (D-7, AC-11) was kept exactly as it was.
+
+---
+
 ## Deferred
 
 Things you saw and chose not to do. Week 4 Day 1 reads this list.
 
 | # | What | Why deferred | Risk if never done |
 |---|---|---|---|
-| D-01 | The row-to-JSON block is copied five times (`list_talks`, `search_talks`, `get_talk`, `create_talk`, `patch_talk`), each copy slightly different | It runs only after the database is touched, and no test covers it yet. Changing untested code is a rewrite, not a refactor. Revisit in Week 2, once the integration tests for AC-01, 07, 08 and 09 exist | The endpoints drift apart: a field added to one reply is forgotten in the others |
-| D-02 | Cryptic names in the database code (`r`, `sp`, `c`, `tid`, `trs`) | Same as D-01: no tests cover that code yet | Misreading the code during Week 3 performance tuning, the code most likely to be changed under pressure |
+| D-01 | **Done: R-09.** The row-to-JSON block is copied five times (`list_talks`, `search_talks`, `get_talk`, `create_talk`, `patch_talk`), each copy slightly different | It runs only after the database is touched, and no test covers it yet. Changing untested code is a rewrite, not a refactor. Revisit in Week 2, once the integration tests for AC-01, 07, 08 and 09 exist | The endpoints drift apart: a field added to one reply is forgotten in the others |
+| D-02 | **Done: R-10.** Cryptic names in the database code (`r`, `sp`, `c`, `tid`, `trs`) | Same as D-01: no tests cover that code yet | Misreading the code during Week 3 performance tuning, the code most likely to be changed under pressure |
 
 **Update 2026-10-08:** D-01 and D-02 are no longer blocked. The integration
 tests (AC-01, 04, 07, 08, 09, 17 and the contract test) now run the database
