@@ -1,0 +1,43 @@
+3 · Analyze	Enforce the coverage gate	﻿2026-10-08T17:33:19.6447607Z ##[group]Run ./scripts/check-coverage.sh
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6447916Z ^[[36;1m./scripts/check-coverage.sh^[[0m
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6503498Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6503791Z env:
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6504038Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6504406Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6504761Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6505067Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6505382Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6505700Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6505975Z   COVERAGE_MIN: 80
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6506157Z   BRANCH_MIN: 60
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6506333Z ##[endgroup]
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.6608826Z Reading reports/coverage.xml
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7262750Z Line coverage:    54.84%   (gate: >= 80%)
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7303670Z ##[error]Line coverage 54.84% is below the gate of 80%.
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7309759Z Branch coverage:  40.00%   (gate: >= 60%)
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7323028Z ##[error]Branch coverage 40.00% is below the gate of 60%.
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7328778Z ##[error]Process completed with exit code 1.
+Quality summary	Fail the run if any stage failed	﻿2026-10-08T17:33:26.6691014Z ##[group]Run bad=0
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6691583Z ^[[36;1mbad=0^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6692275Z ^[[36;1m# config first, and it matters more than the rest: if thresholds.yml^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6693227Z ^[[36;1m# is malformed every downstream job is SKIPPED, not failed, so a loop^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6694160Z ^[[36;1m# that omits config counts zero failures and reports success on a^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6695060Z ^[[36;1m# pipeline that never ran. That is the state branch protection is^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6695813Z ^[[36;1m# most likely to be pointed at.^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6696430Z ^[[36;1mfor r in "success" "success" "success" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6697052Z ^[[36;1m         "failure" "skipped" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6697639Z ^[[36;1m         "skipped" "skipped" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6698227Z ^[[36;1m         "skipped" "skipped"; do^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6698788Z ^[[36;1m  case "$r" in^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6699568Z ^[[36;1m    failure|cancelled) bad=$((bad + 1)) ;;^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6700685Z ^[[36;1m  esac^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6701129Z ^[[36;1mdone^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6701575Z ^[[36;1mif [ "$bad" -gt 0 ]; then^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6702227Z ^[[36;1m  echo "::error::$bad stage(s) failed or were cancelled."^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6702886Z ^[[36;1m  exit 1^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6703313Z ^[[36;1mfi^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6703760Z ^[[36;1mecho "No stage failed."^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6767786Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6768493Z ##[endgroup]
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6912634Z ##[error]1 stage(s) failed or were cancelled.
+Quality summary	Fail the run if any stage failed	2026-10-08T17:33:26.6922314Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,3 @@
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:14:42.7302799Z Line coverage:    87.90%   (gate: >= 80%)
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:14:42.7344969Z Branch coverage:  83.33%   (gate: >= 60%)
+3 · Analyze	Enforce the coverage gate	2026-10-08T17:14:42.7363651Z Coverage gates met.
