@@ -59,7 +59,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 
 | ☐ | Item | Record |
 |---|---|---|
-| ☐ | Framework layers in place | `base` `pages` `utils` `config` `tests` |
+| ☒ | Framework layers in place | `base` `pages` `utils` `config` `tests` |
 | ☒ | Integration tests written | Count: 7 Types: API + database (6), contract (1) |
 | ☐ | E2E tests derived from acceptance criteria | Count: ______ |
 | ☐ | E2E suite passes **twice consecutively** | Run 1: ____ Run 2: ____ |
@@ -67,7 +67,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | ☐ | CI pipeline green on push | Green runs: ______ |
 | ☒ | **Coverage gate enforced at 80%** | 87.90 % (line; branch 83.33 %) |
 | ☒ | Gate proven to work (a run that failed it) | Yes: run 37817280239, see docs/evidence/ |
-| ☐ | `docs/framework-architecture.md` | Committed |
+| ☒ | `docs/framework-architecture.md` | Committed |
 | ☐ | **Gherkin decision recorded, with justification** | Adopt ☐ / Decline ☐ — audience named: ______________ |
 
 **Carried into Week 3:**
