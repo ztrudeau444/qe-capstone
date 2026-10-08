@@ -60,7 +60,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | ☐ | Item | Record |
 |---|---|---|
 | ☐ | Framework layers in place | `base` `pages` `utils` `config` `tests` |
-| ☐ | Integration tests written | Count: ______ Types: ______________ |
+| ☒ | Integration tests written | Count: 6 Types: API + database (5), contract (1) |
 | ☐ | E2E tests derived from acceptance criteria | Count: ______ |
 | ☐ | E2E suite passes **twice consecutively** | Run 1: ____ Run 2: ____ |
 | ☐ | Static analysis connected | **Maintainability grade: ____** (gate A) |
@@ -142,19 +142,19 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 
 | Metric | Week 1 | Week 2 | Week 3 | Week 4 | Gate |
 |---|---|---|---|---|---|
-| Line coverage % | 55 | | | | ≥ 80 |
-| **Branch coverage %** | 43 | | | | **≥ 60** |
+| Line coverage % | 55 | 78 |  |  | ≥ 80 |
+| **Branch coverage %** | 43 | 67 |  |  | **≥ 60** |
 | Maintainability grade | — | | | | A |
-| Unit tests | 8 | | | | — |
-| Integration tests | — | | | | — |
-| E2E tests | — | | | | — |
-| Suite runtime (s) | 1.4 | | | | — |
+| Unit tests | 8 | 8 |  |  | — |
+| Integration tests | — | 6 |  |  | — |
+| E2E tests | — | 0 |  |  | — |
+| Suite runtime (s) | 1.4 | 4.3 |  |  | — |
 | p95 latency (ms) | — | — | | | ≤ 500 |
 | Error rate under load % | — | — | | | < 1 |
 | Critical CVEs | — | — | | | 0 |
 | **High CVEs** | — | — | | | **0** — this is the one `ci.yml` gates on |
 | Accessibility score | — | — | | | ≥ 95 |
-| Criteria covered | 6/15 | ____/____ | ____/____ | ____/____ | 100% F |
+| Criteria covered | 6/15 | 11/15 | ____/____ | ____/____ | 100% F |
 | Pipeline stages green | — | ____/3 | ____/6 | ____/8 | 8 |
 
 ---
