@@ -1,6 +1,3 @@
-Failing run: https://github.com/ztrudeau444/qe-capstone/actions/runs/37817280239
-Commit: integration tests temporarily skipped to prove the gate fails
-
 3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7262750Z Line coverage:    54.84%   (gate: >= 80%)
 3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7303670Z ##[error]Line coverage 54.84% is below the gate of 80%.
 3 · Analyze	Enforce the coverage gate	2026-10-08T17:33:19.7309759Z Branch coverage:  40.00%   (gate: >= 60%)
