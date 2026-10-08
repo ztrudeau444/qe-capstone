@@ -231,6 +231,115 @@ It was moved without a safety net, and is the next unit test to write.
 
 ---
 
+## R-06 — Move the shared setup into `base/`
+
+| | |
+|---|---|
+| **Date** | 2026-10-08 · commit `061db29` |
+| **Principle** | SRP / DRY |
+| **Trigger** | The `database` and `client` fixtures lived in `src/tests/integration/conftest.py`, inside the tests folder. Week 2 §3.3 puts shared setup in its own `base/` layer, and E2E and smoke tests will need the same `database`. |
+
+**Before**
+
+```python
+# src/tests/integration/conftest.py
+@pytest.fixture(scope="session")
+def database(): ...
+@pytest.fixture
+def client(database, monkeypatch): ...      # a raw TestClient
+```
+
+**After**
+
+```python
+# src/base/fixtures.py, imported by src/tests/conftest.py for every test
+@pytest.fixture(scope="session")
+def database(): ...
+@pytest.fixture
+def api(database, monkeypatch):
+    ...
+    yield TalkDeskApi(client)                  # a client that knows TalkDesk
+```
+
+**What it bought**
+
+One home for setup that every test layer can use, outside the tests themselves.
+
+**Tests that proved it was safe**
+
+All 16 tests green before and after: [`framework-refactor-before.txt`](evidence/framework-refactor-before.txt),
+[`framework-refactor-after.txt`](evidence/framework-refactor-after.txt), and green in the
+pipeline ([run 37829745599](https://github.com/ztrudeau444/qe-capstone/actions/runs/37829745599)) at the same coverage, 87.90% line / 83.33% branch.
+
+---
+
+## R-07 — An API client in `pages/`
+
+| | |
+|---|---|
+| **Date** | 2026-10-08 · commit `061db29` |
+| **Principle** | DRY / DIP |
+| **Trigger** | TalkDesk's URLs were written out 9 times across 3 test files. Moving one endpoint would have meant editing every test that used it. |
+
+**Before**
+
+```python
+r = client.patch("/api/talks/1", json={"status": "accepted", "score": 9})
+talks = client.get("/api/talks/search", params={"q": "flaky"}).json()
+```
+
+**After**
+
+```python
+r = api.review_talk(1, status="accepted", score=9)
+talks = api.search_talks("flaky").json()
+```
+
+**What it bought**
+
+URLs live in `pages/talkdesk_api.py` only, and the tests read as behaviour
+rather than HTTP. Tests depend on `TalkDeskApi`, so the client behind it can
+change without touching them.
+
+**Tests that proved it was safe**
+
+All 7 integration tests green before and after (same evidence as R-06).
+
+---
+
+## R-08 — Test data from an Object Mother in `utils/`
+
+| | |
+|---|---|
+| **Date** | 2026-10-08 · commit `061db29` |
+| **Principle** | DRY |
+| **Trigger** | Each submission test wrote out a whole talk to change one field, which hid the field the test was actually about. |
+
+**Before**
+
+```python
+client.post("/api/talks", json={
+    "speaker_id": 999999, "title": "A valid title", "abstract": "", "track": "testing"})
+```
+
+**After**
+
+```python
+api.submit_talk(**valid_talk(speaker_id=999999))   # this test is about the speaker
+```
+
+**What it bought**
+
+The one field that matters is the only one written in the test. A new rule
+that needs a new field changes `valid_talk()` once.
+
+**Tests that proved it was safe**
+
+`test_valid_talk_is_created` and `test_unknown_speaker_is_rejected`: green
+before and after (same evidence as R-06).
+
+---
+
 ## Deferred
 
 Things you saw and chose not to do. Week 4 Day 1 reads this list.
@@ -239,3 +348,7 @@ Things you saw and chose not to do. Week 4 Day 1 reads this list.
 |---|---|---|---|
 | D-01 | The row-to-JSON block is copied five times (`list_talks`, `search_talks`, `get_talk`, `create_talk`, `patch_talk`), each copy slightly different | It runs only after the database is touched, and no test covers it yet. Changing untested code is a rewrite, not a refactor. Revisit in Week 2, once the integration tests for AC-01, 07, 08 and 09 exist | The endpoints drift apart: a field added to one reply is forgotten in the others |
 | D-02 | Cryptic names in the database code (`r`, `sp`, `c`, `tid`, `trs`) | Same as D-01: no tests cover that code yet | Misreading the code during Week 3 performance tuning, the code most likely to be changed under pressure |
+
+**Update 2026-10-08:** D-01 and D-02 are no longer blocked. The integration
+tests (AC-01, 04, 07, 08, 09, 17 and the contract test) now run the database
+code both items live in, so they can be done as refactors with a safety net.
