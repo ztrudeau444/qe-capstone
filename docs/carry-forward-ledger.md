@@ -148,7 +148,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | Unit tests | 8 | 9 |  |  | — |
 | Integration tests | — | 7 |  |  | — |
 | E2E tests | — | 0 |  |  | — |
-| Suite runtime (s) | 1.4 | 4.3 |  |  | — |
+| Suite runtime (s) | 1.4 | 0.9 |  |  | — |
 | p95 latency (ms) | — | — | | | ≤ 500 |
 | Error rate under load % | — | — | | | < 1 |
 | Critical CVEs | — | — | | | 0 |

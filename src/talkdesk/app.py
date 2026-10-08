@@ -37,14 +37,25 @@ def db():
 @app.get("/health")
 def health():
     try:
-        with db() as c:
-            c.execute("SELECT 1")
+        with db() as conn:
+            conn.execute("SELECT 1")
         return {"status": "ok"}
     except Exception:
         return JSONResponse({"status": "degraded"}, status_code=503)
 
 
 # ────────────────────────────────────────────────────────────── API
+def talk_fields(row):
+    """The fields every talk reply starts with. Was copied into five replies (D-01)."""
+    return {"id": row["id"], "title": row["title"], "track": row["track"],
+            "status": row["status"], "score": row["score"]}
+
+
+def utc_timestamp(value):
+    """A database timestamp as ISO-8601 UTC text, the way every reply shows it."""
+    return value.isoformat() + "Z"
+
+
 @app.get("/api/talks")
 def list_talks(track: Optional[str] = None, status: Optional[str] = None):
     """List up to 100 talks, optionally filtered by track and/or status."""
@@ -56,18 +67,17 @@ def list_talks(track: Optional[str] = None, status: Optional[str] = None):
         sql += " AND status = %s"; args.append(status)
     sql += " ORDER BY id LIMIT 100"
 
-    with db() as c:
-        rows = c.execute(sql, args).fetchall()
+    with db() as conn:
+        talks = conn.execute(sql, args).fetchall()
         out = []
-        for r in rows:
+        for talk in talks:
             # the N+1: a separate round trip per row
-            sp = c.execute("SELECT id, name FROM speakers WHERE id = %s",
-                           (r["speaker_id"],)).fetchone()
+            speaker = conn.execute("SELECT id, name FROM speakers WHERE id = %s",
+                                   (talk["speaker_id"],)).fetchone()
             out.append({
-                "id": r["id"], "title": r["title"], "track": r["track"],
-                "status": r["status"], "score": r["score"],
-                "speaker": {"id": sp["id"], "name": sp["name"]},
-                "created_at": r["created_at"].isoformat() + "Z",
+                **talk_fields(talk),
+                "speaker": {"id": speaker["id"], "name": speaker["name"]},
+                "created_at": utc_timestamp(talk["created_at"]),
             })
     return out
 
@@ -75,34 +85,32 @@ def list_talks(track: Optional[str] = None, status: Optional[str] = None):
 @app.get("/api/talks/search")
 def search_talks(q: str = ""):
     """Find up to 100 talks whose title contains q, ignoring case."""
-    with db() as c:
-        rows = c.execute(
+    with db() as conn:
+        rows = conn.execute(
             "SELECT t.*, s.name AS speaker_name FROM talks t "
             "JOIN speakers s ON s.id = t.speaker_id "
             "WHERE t.title ILIKE %s ORDER BY t.id LIMIT 100",
             (f"%{q}%",),
         ).fetchall()
-    return [{"id": r["id"], "title": r["title"], "track": r["track"],
-             "status": r["status"], "score": r["score"],
-             "speaker": {"id": r["speaker_id"], "name": r["speaker_name"]},
-             "created_at": r["created_at"].isoformat() + "Z"} for r in rows]
+    return [{**talk_fields(row),
+             "speaker": {"id": row["speaker_id"], "name": row["speaker_name"]},
+             "created_at": utc_timestamp(row["created_at"])} for row in rows]
 
 
 @app.get("/api/talks/{talk_id}")
 def get_talk(talk_id: str):
     """Return one talk in full, with its speaker's details."""
-    tid = int(talk_id)                      # deliberately unguarded
-    with db() as c:
-        r = c.execute("SELECT * FROM talks WHERE id = %s", (tid,)).fetchone()
-        if not r:
+    number = int(talk_id)                   # deliberately unguarded
+    with db() as conn:
+        talk = conn.execute("SELECT * FROM talks WHERE id = %s", (number,)).fetchone()
+        if not talk:
             raise HTTPException(404, "talk not found")
-        sp = c.execute("SELECT * FROM speakers WHERE id = %s",
-                       (r["speaker_id"],)).fetchone()
-    return {"id": r["id"], "title": r["title"], "abstract": r["abstract"],
-            "track": r["track"], "status": r["status"], "score": r["score"],
-            "speaker": {"id": sp["id"], "name": sp["name"], "email": sp["email"],
-                        "bio": sp["bio"]},
-            "created_at": r["created_at"].isoformat() + "Z"}
+        speaker = conn.execute("SELECT * FROM speakers WHERE id = %s",
+                               (talk["speaker_id"],)).fetchone()
+    return {**talk_fields(talk), "abstract": talk["abstract"],
+            "speaker": {"id": speaker["id"], "name": speaker["name"],
+                        "email": speaker["email"], "bio": speaker["bio"]},
+            "created_at": utc_timestamp(talk["created_at"])}
 
 
 class NewTalk(BaseModel):
@@ -126,20 +134,19 @@ def validate_new_talk(body: NewTalk) -> None:
 def create_talk(body: NewTalk):
     """Submit a new talk. Rule-breaking input is rejected before anything is saved."""
     validate_new_talk(body)
-    with db() as c:
-        if not c.execute("SELECT 1 FROM speakers WHERE id = %s",
-                         (body.speaker_id,)).fetchone():
+    with db() as conn:
+        if not conn.execute("SELECT 1 FROM speakers WHERE id = %s",
+                            (body.speaker_id,)).fetchone():
             raise HTTPException(404, "speaker not found")
-        r = c.execute(
+        talk = conn.execute(
             "INSERT INTO talks (speaker_id,title,abstract,track) "
             "VALUES (%s,%s,%s,%s) RETURNING *",
             (body.speaker_id, body.title, body.abstract, body.track),
         ).fetchone()
-        c.commit()
-    return {"id": r["id"], "title": r["title"], "track": r["track"],
-            "status": r["status"], "score": r["score"],
-            "speaker": {"id": r["speaker_id"]},
-            "created_at": r["created_at"].isoformat() + "Z"}
+        conn.commit()
+    return {**talk_fields(talk),
+            "speaker": {"id": talk["speaker_id"]},
+            "created_at": utc_timestamp(talk["created_at"])}
 
 
 class TalkPatch(BaseModel):
@@ -167,14 +174,13 @@ def patch_talk(talk_id: int, body: TalkPatch):
     if body.score is not None:
         sets.append("score = %s"); args.append(body.score)
     args.append(talk_id)
-    with db() as c:
-        r = c.execute(f"UPDATE talks SET {', '.join(sets)} WHERE id = %s RETURNING *",
-                      args).fetchone()
-        if not r:
+    with db() as conn:
+        talk = conn.execute(f"UPDATE talks SET {', '.join(sets)} WHERE id = %s RETURNING *",
+                            args).fetchone()
+        if not talk:
             raise HTTPException(404, "talk not found")
-        c.commit()
-    return {"id": r["id"], "title": r["title"], "track": r["track"],
-            "status": r["status"], "score": r["score"]}
+        conn.commit()
+    return talk_fields(talk)
 
 
 class Login(BaseModel):
