@@ -31,8 +31,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | The new ID, the status "submitted" and the creation date are filled in by the database; a unit test replaces the database with a stand-in, so it cannot tell whether the real one fills them in correctly. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_talks_api.py::test_valid_talk_is_created` |
+| **Status** | Green |
 
 ### AC-02 — Blank title is rejected
 
@@ -73,8 +73,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | Whether a speaker exists is the database's answer; with a stand-in, the test would only check the answer the stand-in was told to give. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_talks_api.py::test_unknown_speaker_is_rejected` |
+| **Status** | Green |
 
 ### AC-05 — Score outside 1–10 is rejected
 
@@ -115,8 +115,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | The filtering, limit and ordering are done by the SQL query; a stand-in database would return whatever the test fed it, so a broken query would still pass. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_talks_api.py::test_listing_filters_by_track` |
+| **Status** | Green |
 
 ### AC-08 — Search matches title words regardless of case
 
@@ -129,8 +129,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | Case-insensitive matching is done by the database (`ILIKE`), which a unit test replaces. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_talks_api.py::test_search_ignores_case` |
+| **Status** | Green |
 
 ### AC-09 — Unknown talk ID returns "not found"
 
@@ -143,8 +143,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | "This talk does not exist" is only known by asking the real database; a stand-in would only report what it was told to. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_talks_api.py::test_unknown_talk_returns_not_found` |
+| **Status** | Green |
 
 ### AC-10 — Reviewer sign-in
 
@@ -236,15 +236,15 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 
 | ID | Criterion | Layer | Test | Green |
 |---|---|---|---|---|
-| AC-01 | Valid talk is created | Integration | | ☐ |
+| AC-01 | Valid talk is created | Integration | test_valid_talk_is_created | ☒ |
 | AC-02 | Blank title rejected | Unit | test_blank_title_is_rejected | ☒ |
 | AC-03 | Invalid track rejected | Unit | test_invalid_track_is_rejected | ☒ |
-| AC-04 | Unknown speaker rejected | Integration | | ☐ |
+| AC-04 | Unknown speaker rejected | Integration | test_unknown_speaker_is_rejected | ☒ |
 | AC-05 | Score outside 1–10 rejected | Unit | test_score_outside_1_to_10_is_rejected | ☒ |
 | AC-06 | Empty update rejected | Unit | test_empty_update_is_rejected | ☒ |
-| AC-07 | List filters by track | Integration | | ☐ |
-| AC-08 | Search is case-insensitive | Integration | | ☐ |
-| AC-09 | Unknown talk ID → 404 | Integration | | ☐ |
+| AC-07 | List filters by track | Integration | test_listing_filters_by_track | ☒ |
+| AC-08 | Search is case-insensitive | Integration | test_search_ignores_case | ☒ |
+| AC-09 | Unknown talk ID → 404 | Integration | test_unknown_talk_returns_not_found | ☒ |
 | AC-10 | Reviewer sign-in | Unit | test_correct_password_returns_token, test_wrong_password_is_rejected | ☒ |
 | AC-11 | Errors expose no internals (NF, known gap) | Unit | | ☐ |
 | AC-12 | List p95 ≤ 500 ms under load (NF) | System (Week 3) | | ☐ |

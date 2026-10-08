@@ -4,6 +4,7 @@ pytest-cov==6.0.0
 
 # Week 2 — integration and E2E
 requests==2.32.3
+httpx==0.28.1
 responses==0.25.3
 playwright==1.49.1
 pytest-playwright==0.6.2
