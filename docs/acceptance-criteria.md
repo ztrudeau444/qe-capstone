@@ -241,8 +241,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Unit |
 | **Why that layer** | The list of allowed statuses is a rule held in the code (`validate_talk_patch`), checked before the database is touched. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/unit/test_patch_talk.py::test_invalid_status_is_rejected` |
+| **Status** | Green |
 
 ### AC-17 — A review is saved
 
@@ -255,8 +255,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | Integration |
 | **Why that layer** | The update and the values returned are produced by the database (`UPDATE ... RETURNING`); a unit test replaces the database, so it cannot tell whether the change was really saved. |
-| **Test** | |
-| **Status** | Not started |
+| **Test** | `src/tests/integration/test_review_api.py::test_review_is_saved` |
+| **Status** | Green |
 
 ## Traceability
 
@@ -279,5 +279,5 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
 | AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
 | AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☒ |
-| AC-16 | Invalid status rejected | Unit | | ☐ |
-| AC-17 | Review is saved | Integration | | ☐ |
+| AC-16 | Invalid status rejected | Unit | test_invalid_status_is_rejected | ☒ |
+| AC-17 | Review is saved | Integration | test_review_is_saved | ☒ |
