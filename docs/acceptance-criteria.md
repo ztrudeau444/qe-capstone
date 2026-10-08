@@ -230,6 +230,34 @@ criterion is how a defect gets found.
 | **Test** | `src/tests/unit/test_create_talk.py::test_title_over_200_characters_is_rejected` |
 | **Status** | Green |
 
+### AC-16 — Invalid status is rejected
+
+**Given** an existing talk
+**When** a reviewer updates its status to "maybe"
+**Then** the reply is 400 and the message lists the allowed statuses (accepted, rejected, submitted), and the talk is unchanged
+
+| | |
+|---|---|
+| **Type** | Functional |
+| **Test layer** | Unit |
+| **Why that layer** | The list of allowed statuses is a rule held in the code (`validate_talk_patch`), checked before the database is touched. |
+| **Test** | |
+| **Status** | Not started |
+
+### AC-17 — A review is saved
+
+**Given** talk 1 exists
+**When** a reviewer sets its status to "accepted" and its score to 9
+**Then** the reply is 200 with the new status and score, fetching talk 1 returns them, and talk 2 is unchanged
+
+| | |
+|---|---|
+| **Type** | Functional |
+| **Test layer** | Integration |
+| **Why that layer** | The update and the values returned are produced by the database (`UPDATE ... RETURNING`); a unit test replaces the database, so it cannot tell whether the change was really saved. |
+| **Test** | |
+| **Status** | Not started |
+
 ## Traceability
 
 Every functional criterion must reach 100% coverage by the Week 4 exit gate.
@@ -251,3 +279,5 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
 | AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
 | AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☒ |
+| AC-16 | Invalid status rejected | Unit | | ☐ |
+| AC-17 | Review is saved | Integration | | ☐ |
