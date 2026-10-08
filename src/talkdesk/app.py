@@ -45,6 +45,17 @@ def health():
 
 
 # ────────────────────────────────────────────────────────────── API
+def talk_fields(row):
+    """The fields every talk reply starts with. Was copied into five replies (D-01)."""
+    return {"id": row["id"], "title": row["title"], "track": row["track"],
+            "status": row["status"], "score": row["score"]}
+
+
+def utc_timestamp(value):
+    """A database timestamp as ISO-8601 UTC text, the way every reply shows it."""
+    return value.isoformat() + "Z"
+
+
 @app.get("/api/talks")
 def list_talks(track: Optional[str] = None, status: Optional[str] = None):
     """List up to 100 talks, optionally filtered by track and/or status."""
@@ -64,10 +75,9 @@ def list_talks(track: Optional[str] = None, status: Optional[str] = None):
             sp = c.execute("SELECT id, name FROM speakers WHERE id = %s",
                            (r["speaker_id"],)).fetchone()
             out.append({
-                "id": r["id"], "title": r["title"], "track": r["track"],
-                "status": r["status"], "score": r["score"],
+                **talk_fields(r),
                 "speaker": {"id": sp["id"], "name": sp["name"]},
-                "created_at": r["created_at"].isoformat() + "Z",
+                "created_at": utc_timestamp(r["created_at"]),
             })
     return out
 
@@ -82,10 +92,9 @@ def search_talks(q: str = ""):
             "WHERE t.title ILIKE %s ORDER BY t.id LIMIT 100",
             (f"%{q}%",),
         ).fetchall()
-    return [{"id": r["id"], "title": r["title"], "track": r["track"],
-             "status": r["status"], "score": r["score"],
+    return [{**talk_fields(r),
              "speaker": {"id": r["speaker_id"], "name": r["speaker_name"]},
-             "created_at": r["created_at"].isoformat() + "Z"} for r in rows]
+             "created_at": utc_timestamp(r["created_at"])} for r in rows]
 
 
 @app.get("/api/talks/{talk_id}")
@@ -98,11 +107,10 @@ def get_talk(talk_id: str):
             raise HTTPException(404, "talk not found")
         sp = c.execute("SELECT * FROM speakers WHERE id = %s",
                        (r["speaker_id"],)).fetchone()
-    return {"id": r["id"], "title": r["title"], "abstract": r["abstract"],
-            "track": r["track"], "status": r["status"], "score": r["score"],
+    return {**talk_fields(r), "abstract": r["abstract"],
             "speaker": {"id": sp["id"], "name": sp["name"], "email": sp["email"],
                         "bio": sp["bio"]},
-            "created_at": r["created_at"].isoformat() + "Z"}
+            "created_at": utc_timestamp(r["created_at"])}
 
 
 class NewTalk(BaseModel):
@@ -136,10 +144,9 @@ def create_talk(body: NewTalk):
             (body.speaker_id, body.title, body.abstract, body.track),
         ).fetchone()
         c.commit()
-    return {"id": r["id"], "title": r["title"], "track": r["track"],
-            "status": r["status"], "score": r["score"],
+    return {**talk_fields(r),
             "speaker": {"id": r["speaker_id"]},
-            "created_at": r["created_at"].isoformat() + "Z"}
+            "created_at": utc_timestamp(r["created_at"])}
 
 
 class TalkPatch(BaseModel):
@@ -173,8 +180,7 @@ def patch_talk(talk_id: int, body: TalkPatch):
         if not r:
             raise HTTPException(404, "talk not found")
         c.commit()
-    return {"id": r["id"], "title": r["title"], "track": r["track"],
-            "status": r["status"], "score": r["score"]}
+    return talk_fields(r)
 
 
 class Login(BaseModel):
