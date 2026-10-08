@@ -9,6 +9,7 @@ mkdir -p reports
 set +e
 python3 -m pytest -c profiles/python/pyproject.toml \
   --cov=src \
+  --cov-config=profiles/python/pyproject.toml \
   --cov-branch \
   --cov-report=xml:reports/coverage.xml \
   --cov-report=term-missing \
