@@ -68,7 +68,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | ☒ | **Coverage gate enforced at 80%** | 87.90 % (line; branch 83.33 %) |
 | ☒ | Gate proven to work (a run that failed it) | Yes: run 37817280239, see docs/evidence/ |
 | ☒ | `docs/framework-architecture.md` | Committed |
-| ☐ | **Gherkin decision recorded, with justification** | Adopt ☐ / Decline ☐ — audience named: ______________ |
+| ☒ | **Gherkin decision recorded, with justification** | Adopt ☐ / Decline ☒ — audience named: nobody (see docs/test-strategy.md) |
 
 **Carried into Week 3:**
 
