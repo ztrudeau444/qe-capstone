@@ -26,3 +26,15 @@ def test_empty_update_is_rejected(no_database):
 
     assert error.value.status_code == 400
     assert error.value.detail == "nothing to update"
+
+
+@pytest.mark.unit
+def test_invalid_status_is_rejected(no_database):
+    """AC-16 (closes the R-05 finding): an unknown status is rejected,
+    the message lists the allowed statuses, and nothing is saved."""
+    with pytest.raises(HTTPException) as error:
+        patch_talk(1, TalkPatch(status="maybe"))
+
+    assert error.value.status_code == 400
+    for status in ("accepted", "rejected", "submitted"):
+        assert status in error.value.detail
