@@ -21,7 +21,7 @@ coverage:
   # the workbooks and the Week 0 exit gate all say coverage is measured rather
   # than gated before then; this is the switch that makes that true. Flip it
   # and the Analyze stage starts failing below the numbers underneath.
-  enabled: false           # Week 2
+  enabled: true            # Week 2 — switched on 2026-10-08
   line_minimum: 80         # percent
   branch_minimum: 60
   # Where each profile writes its report. The Analyze stage reads these.
