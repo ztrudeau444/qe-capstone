@@ -40,3 +40,8 @@ def talk_count(database):
         with psycopg.connect(database) as conn:
             return conn.execute("SELECT count(*) FROM talks").fetchone()[0]
     return count
+
+
+# TEMPORARY: proving the coverage gate bites (Week 2 workbook 4b).
+# Skips every integration test; undone by the next commit.
+collect_ignore_glob = ["test_*.py"]
