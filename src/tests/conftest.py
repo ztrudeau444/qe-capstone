@@ -4,3 +4,6 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+# The base layer's fixtures, available to every test by name.
+from base.fixtures import api, database  # noqa: E402,F401

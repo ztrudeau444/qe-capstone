@@ -8,7 +8,7 @@ mkdir -p reports
 # and branch_minimum becomes unmeasurable for this profile.
 set +e
 python3 -m pytest -c profiles/python/pyproject.toml \
-  --cov=src \
+  --cov=src/talkdesk \
   --cov-config=profiles/python/pyproject.toml \
   --cov-branch \
   --cov-report=xml:reports/coverage.xml \
