@@ -9,8 +9,8 @@ SPEAKER_FIELDS = {"id": int, "name": str, "email": str, "bio": (str, type(None))
 
 
 @pytest.mark.integration
-def test_talk_detail_matches_the_contract(client):
-    talk = client.get("/api/talks/1").json()
+def test_talk_detail_matches_the_contract(api):
+    talk = api.get_talk(1).json()
 
     assert set(talk) == set(TALK_FIELDS), "fields added or removed"
     for field, kind in TALK_FIELDS.items():
