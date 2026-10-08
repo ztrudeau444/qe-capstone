@@ -34,3 +34,15 @@ Both commits are in [pull request #13](https://github.com/ztrudeau444/qe-capston
 **What the log said, in my words:** <What the log said, in my words: Line coverage dropped to 54.84% and branch coverage to 40%, both below the gates of 80% and 60%, so the Analyze stage failed even though every test that ran passed.>
 
 **What this proves:** <What this proves: The gate really blocks a change that leaves too much code untested, even when every test passes, and the pipeline goes back to green as soon as the tests are restored.>
+
+
+## Week 2: framework layers (Stage 3)
+
+The tests were restructured into `base/`, `pages/`, `utils/` and `config/`
+(commit `061db29`). Same 16 tests, same results:
+
+- Before: [`framework-refactor-before.txt`](framework-refactor-before.txt) · After: [`framework-refactor-after.txt`](framework-refactor-after.txt)
+- Pipeline: [run 37829745599](https://github.com/ztrudeau444/qe-capstone/actions/runs/37829745599), Analyze unchanged at 87.90% line / 83.33% branch.
+- Coverage now measures `src/talkdesk` only (commit `54d09ba`), so the new
+  framework code, which the tests use and so would be 100% covered, cannot
+  inflate the gate's number.
