@@ -166,13 +166,22 @@ jobs:
           path: .
         continue-on-error: true   # first run of a new repo has no artifact yet
 
+      # Nothing in this pipeline installed sonar-scanner, although analyze.sh
+      # assumed the setup step did, so the step would have failed with
+      # "command not found" the first time maintainability was enabled.
+      # SonarSource's action installs the scanner and runs it. It reads
+      # sonar-project.properties; the key and organisation still come from the
+      # repository variables, as analyze.sh did. Pinned (Appendix A §A.7, row 10).
       - name: SonarQube Cloud analysis
         if: needs.config.outputs.maintainability_enabled == 'true'
+        uses: SonarSource/sonarqube-scan-action@v8.2.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
-          SONAR_ORG: ${{ vars.SONAR_ORG }}
-        run: ./scripts/qe.sh analyze
+        with:
+          args: >
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORG }}
+            -Dsonar.qualitygate.wait=true
       # This used to print four lines and pass. Week 2's exit gate asks for
       # "a failing run that proves the gate bites", and a stage that cannot
       # fail cannot produce one. It now reads the coverage report and exits
