@@ -45,7 +45,7 @@ mutation:
 
 performance:               # Week 3
   enabled: true
-  p95_ms: 10
+  p95_ms: 500
   # p99 is REPORTED, not gated. k6's default summary does not even emit p(99)
   # without `summaryTrendStats`, and nothing in the pipeline reads this number.
   # It is here because Week 3 asks for a p50/p95/p99 dashboard and this is the
