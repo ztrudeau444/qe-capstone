@@ -64,7 +64,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | ☐ | E2E tests derived from acceptance criteria | Count: ______ |
 | ☐ | E2E suite passes **twice consecutively** | Run 1: ____ Run 2: ____ |
 | ☒ | Static analysis connected | **Maintainability grade: A** (gate A) · first full analysis 2026-10-09, [run 37945043114](https://github.com/ztrudeau444/qe-capstone/actions/runs/37945043114) |
-| ☐ | CI pipeline green on push | Green runs: ______ |
+| ☒ | CI pipeline green on push | Green runs: 17 of 18 on `main` in Week 2 · #22 red: SonarQube security gate ([run 37930258190](https://github.com/ztrudeau444/qe-capstone/actions/runs/37930258190)) · #23 green on re-run after the token was triaged |
 | ☒ | **Coverage gate enforced at 80%** | 87.90 % (line; branch 83.33 %) |
 | ☒ | Gate proven to work (a run that failed it) | Yes: run 37817280239, see docs/evidence/ |
 | ☒ | `docs/framework-architecture.md` | Committed |
@@ -142,20 +142,20 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 
 | Metric | Week 1 | Week 2 | Week 3 | Week 4 | Gate |
 |---|---|---|---|---|---|
-| Line coverage % | 55 | 88 |  |  | ≥ 80 |
-| **Branch coverage %** | 43 | 83 |  |  | **≥ 60** |
-| Maintainability grade | — | | | | A |
-| Unit tests | 8 | 9 |  |  | — |
+| Line coverage % | 55 | 89 |  |  | ≥ 80 |
+| **Branch coverage %** | 43 | 84 |  |  | **≥ 60** |
+| Maintainability grade | — | A | | | A |
+| Unit tests | 8 | 10 |  |  | — |
 | Integration tests | — | 7 |  |  | — |
 | E2E tests | — | 0 |  |  | — |
-| Suite runtime (s) | 1.4 | 0.9 |  |  | — |
+| Suite runtime (s) | 1.4 | 1.0 |  |  | — |
 | p95 latency (ms) | — | — | | | ≤ 500 |
 | Error rate under load % | — | — | | | < 1 |
 | Critical CVEs | — | — | | | 0 |
 | **High CVEs** | — | — | | | **0** — this is the one `ci.yml` gates on |
 | Accessibility score | — | — | | | ≥ 95 |
 | Criteria covered | 6/15 | 13/17 | ____/____ | ____/____ | 100% F |
-| Pipeline stages green | — | ____/3 | ____/6 | ____/8 | 8 |
+| Pipeline stages green | — | 3/3 | ____/6 | ____/8 | 8 |
 
 ---
 
