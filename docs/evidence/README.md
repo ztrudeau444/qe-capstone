@@ -31,10 +31,9 @@ Both commits are in [pull request #13](https://github.com/ztrudeau444/qe-capston
 - Pull request #13, merged after the restore: [`pr-red-then-green.png`](pr-red-then-green.png)
 - Its commits, red then green: [`pr-red-then-green-commits.png`](pr-red-then-green-commits.png)
 
-**What the log said, in my words:** <What the log said, in my words: Line coverage dropped to 54.84% and branch coverage to 40%, both below the gates of 80% and 60%, so the Analyze stage failed even though every test that ran passed.>
+**What the log said, in my words:** When I skipped the integration tests, coverage dropped to 54.84% for lines and 40% for branches. The Analyze stage failed because both were below the required 80% and 60%.
 
-**What this proves:** <What this proves: The gate really blocks a change that leaves too much code untested, even when every test passes, and the pipeline goes back to green as soon as the tests are restored.>
-
+**What this proves:** Passing tests does not guarantee the quality gate passes. The gate also checks coverage, even when all executed tests pass.
 
 ## Week 2: framework layers (Stage 3)
 
@@ -57,3 +56,33 @@ The tests were restructured into `base/`, `pages/`, `utils/` and `config/`
   paste, and the commit captured only two test-output files. The refactors are the
   later commits `refactor(R-09)` and `refactor(R-10)`. The misleading message was
   left in place rather than rewriting history that had already been pushed.
+
+## Week 2: Maintainability gate (SonarQube Cloud)
+
+Switched on in `quality/thresholds.yml` (`maintainability.enabled: true`), on a
+different day from the coverage gate, as the workbook asks. The rule: grade A,
+no new code smells. The first full analysis of `main` failed SonarQube's
+quality gate, not on maintainability but on **security**.
+
+| Step | PR / commit | Run | 3 · Analyze | SonarQube |
+|---|---|---|---|---|
+| Gate switched on | [PR #22](https://github.com/ztrudeau444/qe-capstone/pull/22) | | Green | Passed: PR had 0 new lines of code |
+| First analysis of `main` | merge `b77d541` | [run 37930258190](https://github.com/ztrudeau444/qe-capstone/actions/runs/37930258190) | **Red** | **Failed**: Security E, 2 blocker vulnerabilities (hard-coded secrets). Maintainability A, Reliability A |
+| Fix 1: database password removed from `app.py` | [PR #23](https://github.com/ztrudeau444/qe-capstone/pull/23), first push | | **Red** | **Failed**: new-code coverage 66.7% (gate 80%); the new safety check had no test |
+| Fix 1, with a test for the safety check | [PR #23](https://github.com/ztrudeau444/qe-capstone/pull/23), second push | | Green | Passed: new-code coverage 100% |
+| Fix 2: demo token triaged as **Accepted** in SonarQube, with a comment linking gap list #1 (real sign-in, Week 3) | no code change | | | |
+| Re-run of `main` | merge `9b38b2c` | [run 37945043114](https://github.com/ztrudeau444/qe-capstone/actions/runs/37945043114) | Green | **Passed**. Maintainability A, coverage 88.0% |
+
+- PR #22 summary: [`sonar-pr22.png`](sonar-pr22.png)
+- First `main` analysis, failed: [`sonar-main-first-run.png`](sonar-main-first-run.png) · overall grades: [`sonar-overall.png`](sonar-overall.png) · the two blockers: [`sonar-security-issues.png`](sonar-security-issues.png)
+- PR #23, failed then passed: [`sonar-pr23-failed.png`](sonar-pr23-failed.png) · [`sonar-pr23-passed.png`](sonar-pr23-passed.png)
+- The accepted issue, with its reason: [`sonar-l195-accepted.png`](sonar-l195-accepted.png)
+- `main`, passed: [`sonar-main-passed.png`](sonar-main-passed.png)
+
+**Still open, recorded on the gap list:** SonarQube reports 11 dependency
+risks on `main` (rated E, but no gate condition is set on them), which Snyk's
+check is not catching (see gap #4).
+
+**What SonarQube found, in my words:** SonarQube found two secrets hardcoded in `app.py`. This is risky because anyone viewing a public repository could find and use them. I fixed the password issue and accepted the demo token because proper sign-in is planned for Week 3, gap #1.
+
+**What this proves:** The tests passed, but SonarQube caught the hardcoded secrets. After I fixed the password, the gate failed because my new code had only 66.7% coverage, below the 80% requirement. I added a test, and then it passed.
