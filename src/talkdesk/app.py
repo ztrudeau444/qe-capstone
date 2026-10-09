@@ -1,4 +1,5 @@
 """TalkDesk: a conference talk-submission desk (the System Under Test)."""
+import logging
 import os
 import traceback
 import psycopg
@@ -8,7 +9,20 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 
-DB_URL = os.environ.get("DB_URL", "postgresql://talkdesk:talkdesk@localhost:5432/talkdesk")
+# Log messages from TalkDesk are written under the name "talkdesk", so they
+# are easy to find and filter in the app's output.
+logger = logging.getLogger("talkdesk")
+
+# Where the database lives. This value comes ONLY from the DB_URL setting:
+#   - docker-compose.yml sets it when TalkDesk runs locally in Docker
+#   - .github/workflows/ci.yml sets it in the pipeline's Test stage
+#   - the test framework (src/base/fixtures.py) sets it for every test
+# There is deliberately no fallback value. The old fallback had a username
+# and password written in the code, which SonarQube Cloud reported as a
+# blocker vulnerability (hard-coded credentials) on 2026-10-09.
+# If DB_URL is missing, TalkDesk still starts; db() below stops with a clear
+# error the first time something actually tries to use the database.
+DB_URL = os.environ.get("DB_URL")
 TRACKS = {"testing", "architecture", "delivery", "culture"}
 STATUSES = {"submitted", "accepted", "rejected"}
 MAX_TITLE_LENGTH = 200
@@ -30,6 +44,30 @@ async def verbose_error_handler(request, exc):
 
 
 def db():
+    """Open a new connection to TalkDesk's database and return it.
+
+    Steps:
+      1. Check that the DB_URL setting exists. Without it there is no address
+         to connect to, so stop straight away with an error that says which
+         setting is missing and where to set it, instead of a confusing
+         error from the database driver.
+      2. Log that a connection is being opened (debug level, so it only
+         shows when detailed logging is switched on).
+      3. Connect. row_factory=dict_row makes each row come back as a
+         dictionary, e.g. {"id": 1, "title": "..."}, so code can read
+         columns by name.
+    """
+    # Step 1: refuse to continue without a database address.
+    if not DB_URL:
+        logger.error("DB_URL is not set, so TalkDesk cannot reach its database.")
+        raise RuntimeError(
+            "DB_URL is not set. Set it in docker-compose.yml (local), "
+            "ci.yml (pipeline) or your shell before using the database."
+        )
+    # Step 2: record the attempt. The address itself is NOT logged,
+    # because it contains the database password.
+    logger.debug("Opening a database connection.")
+    # Step 3: connect and hand the connection back to the caller.
     return psycopg.connect(DB_URL, row_factory=dict_row)
 
 
