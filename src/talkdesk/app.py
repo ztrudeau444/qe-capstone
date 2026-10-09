@@ -97,27 +97,25 @@ def utc_timestamp(value):
 @app.get("/api/talks")
 def list_talks(track: Optional[str] = None, status: Optional[str] = None):
     """List up to 100 talks, optionally filtered by track and/or status."""
-    sql = "SELECT * FROM talks WHERE 1=1"
+    # One query fetches the talks AND their speakers' names (a JOIN), instead
+    # of one query for the talks plus one more per talk (the old N+1: 101
+    # database round trips per request). Week 3 tuning experiment,
+    # 2026-10-09: before and after are in docs/NFT-Strategy.md.
+    sql = ("SELECT t.*, s.name AS speaker_name FROM talks t "
+           "JOIN speakers s ON s.id = t.speaker_id WHERE 1=1")
     args = []
     if track:
-        sql += " AND track = %s"; args.append(track)
+        sql += " AND t.track = %s"; args.append(track)
     if status:
-        sql += " AND status = %s"; args.append(status)
-    sql += " ORDER BY id LIMIT 100"
+        sql += " AND t.status = %s"; args.append(status)
+    sql += " ORDER BY t.id LIMIT 100"
 
     with db() as conn:
-        talks = conn.execute(sql, args).fetchall()
-        out = []
-        for talk in talks:
-            # the N+1: a separate round trip per row
-            speaker = conn.execute("SELECT id, name FROM speakers WHERE id = %s",
-                                   (talk["speaker_id"],)).fetchone()
-            out.append({
-                **talk_fields(talk),
-                "speaker": {"id": speaker["id"], "name": speaker["name"]},
-                "created_at": utc_timestamp(talk["created_at"]),
-            })
-    return out
+        rows = conn.execute(sql, args).fetchall()
+    logger.debug("list_talks: %d talks fetched in one query", len(rows))
+    return [{**talk_fields(row),
+             "speaker": {"id": row["speaker_id"], "name": row["speaker_name"]},
+             "created_at": utc_timestamp(row["created_at"])} for row in rows]
 
 
 @app.get("/api/talks/search")
