@@ -1,0 +1,9 @@
+4 · LoadTest	Load test	2026-10-09T19:23:35.1085463Z time="2026-10-09T19:23:35Z" level=info msg="setup: TalkDesk is up at http://localhost:8080" source=console
+4 · LoadTest	Load test	2026-10-09T19:28:36.8102452Z     ✗ 'p(95)<10' p(95)=96.88ms
+4 · LoadTest	Load test	2026-10-09T19:28:36.8102756Z     http_req_failed
+4 · LoadTest	Load test	2026-10-09T19:28:36.8104323Z     checks_succeeded...: 100.00% 10031 out of 10031
+4 · LoadTest	Load test	2026-10-09T19:28:36.8107385Z     http_req_duration..............: avg=39.42ms min=9.06ms med=31.58ms p(90)=73.27ms p(95)=96.88ms p(99)=178.95ms max=313.77ms
+4 · LoadTest	Load test	2026-10-09T19:28:36.8108349Z       { expected_response:true }...: avg=39.42ms min=9.06ms med=31.58ms p(90)=73.27ms p(95)=96.88ms p(99)=178.95ms max=313.77ms
+4 · LoadTest	Load test	2026-10-09T19:28:36.8109330Z     http_req_failed................: 0.00%  0 out of 10032
+4 · LoadTest	Load test	2026-10-09T19:28:36.8110688Z     iteration_duration.............: avg=2.07s   min=1.03s  med=2.08s   p(90)=2.86s   p(95)=2.96s   p(99)=3.05s    max=3.21s   
+4 · LoadTest	Load test	2026-10-09T19:28:36.8587985Z time="2026-10-09T19:28:36Z" level=error msg="thresholds on metrics 'http_req_duration' have been crossed"
