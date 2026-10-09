@@ -35,7 +35,7 @@ maintainability:
   # false until Week 2. The SonarQube Cloud analysis step reads this, so a
   # learner with no SONAR_TOKEN yet gets a skipped step rather than a red
   # stage on their very first push.
-  enabled: false           # Week 2
+  enabled: true            # Week 2 — switched on 2026-10-09
   minimum_grade: A         # SonarQube Cloud rating
   max_new_code_smells: 0
 
