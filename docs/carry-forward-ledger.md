@@ -63,7 +63,7 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 | ☒ | Integration tests written | Count: 7 Types: API + database (6), contract (1) |
 | ☐ | E2E tests derived from acceptance criteria | Count: ______ |
 | ☐ | E2E suite passes **twice consecutively** | Run 1: ____ Run 2: ____ |
-| ☐ | Static analysis connected | **Maintainability grade: ____** (gate A) |
+| ☒ | Static analysis connected | **Maintainability grade: A** (gate A) · first full analysis 2026-10-09, [run 37945043114](https://github.com/ztrudeau444/qe-capstone/actions/runs/37945043114) |
 | ☐ | CI pipeline green on push | Green runs: ______ |
 | ☒ | **Coverage gate enforced at 80%** | 87.90 % (line; branch 83.33 %) |
 | ☒ | Gate proven to work (a run that failed it) | Yes: run 37817280239, see docs/evidence/ |
