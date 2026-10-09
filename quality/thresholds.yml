@@ -44,7 +44,7 @@ mutation:
   score_minimum: 60
 
 performance:               # Week 3
-  enabled: false
+  enabled: true
   p95_ms: 500
   # p99 is REPORTED, not gated. k6's default summary does not even emit p(99)
   # without `summaryTrendStats`, and nothing in the pipeline reads this number.
