@@ -1,0 +1,9 @@
+
+Address                    Requests   Share      p50      p95      p99      max
+-------------------------------------------------------------------------------
+GET /api/talks                 4854     58%     412ms   1110ms   1373ms   1727ms
+GET /api/talks/search          1013     12%      44ms    100ms    114ms    157ms
+POST /api/talks                 490      6%      41ms     99ms    117ms    154ms
+GET /api/talks/{id}            1964     24%      38ms     93ms    112ms    142ms
+
+All times in milliseconds. Gate: p95 <= 500 ms (applies to all requests together).
