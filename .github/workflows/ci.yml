@@ -305,7 +305,9 @@ jobs:
           # No --exit. That fails on ANY violation, which is stricter than the
           # threshold this program declares and is not read from thresholds.yml
           # at all. Save the report, then judge it against the declared limits.
-          axe http://localhost:8080 \
+          # Both pages users reach; AC-13 is about /login, which the
+          # starter never checked. check-a11y.py reads one result per page.
+          axe http://localhost:8080/,http://localhost:8080/login \
             --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
             --save reports/axe.json
           # No `|| true` here either. Without --exit, axe returns 0 even when it
@@ -329,14 +331,21 @@ jobs:
           # The score gate lives in thresholds.yml and is applied below, which
           # is why quality/accessibility/lighthouserc.json no longer carries a
           # second copy of the number.
-          lighthouse http://localhost:8080 \
-            --only-categories=accessibility \
-            --chrome-flags="--headless --no-sandbox" \
-            --output=json --output-path=reports/lighthouse.json
-          SCORE=$(python3 -c "import json;print(int(json.load(open('reports/lighthouse.json'))['categories']['accessibility']['score']*100))")
+          # Every page a user reaches is scored and gated, not only the home
+          # page: AC-13 is about /login, which the starter never scored.
           MIN=${{ needs.config.outputs.a11y_min }}
-          echo "Accessibility score: $SCORE (gate: >= $MIN)"
-          [ "$SCORE" -ge "$MIN" ] || { echo "::error::Accessibility $SCORE is below the $MIN gate"; exit 1; }
+          FAILED=0
+          for PAGE in "" login; do
+            REPORT="reports/lighthouse-${PAGE:-home}.json"
+            lighthouse "http://localhost:8080/$PAGE" \
+              --only-categories=accessibility \
+              --chrome-flags="--headless --no-sandbox" \
+              --output=json --output-path="$REPORT"
+            SCORE=$(python3 -c "import json,sys;print(int(json.load(open(sys.argv[1]))['categories']['accessibility']['score']*100))" "$REPORT")
+            echo "Accessibility score for /$PAGE: $SCORE (gate: >= $MIN)"
+            [ "$SCORE" -ge "$MIN" ] || { echo "::error::Accessibility of /$PAGE is $SCORE, below the $MIN gate"; FAILED=1; }
+          done
+          exit $FAILED
       - uses: actions/upload-artifact@v4
         if: always()
         with:
