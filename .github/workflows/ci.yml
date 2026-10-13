@@ -307,8 +307,12 @@ jobs:
           # at all. Save the report, then judge it against the declared limits.
           # Both pages users reach; AC-13 is about /login, which the
           # starter never checked. check-a11y.py reads one result per page.
+          # --chromedriver-path: axe's own ChromeDriver did not match the
+          # runner's Chrome (run 38454368791). GitHub's runner ships a
+          # matching one and publishes its folder as $CHROMEWEBDRIVER.
           axe http://localhost:8080/,http://localhost:8080/login \
             --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
+            --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
             --save reports/axe.json
           # No `|| true` here either. Without --exit, axe returns 0 even when it
           # finds violations, so the only thing `|| true` could still swallow is
