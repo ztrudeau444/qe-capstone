@@ -1,0 +1,10 @@
+4 · LoadTest	Load test	2026-10-09T20:04:54.4222844Z time="2026-10-09T20:04:54Z" level=info msg="setup: TalkDesk is up at http://localhost:8080" source=console
+4 · LoadTest	Load test	2026-10-09T20:09:54.8778532Z     http_req_duration
+4 · LoadTest	Load test	2026-10-09T20:09:54.8779098Z     ✓ 'p(95)<500' p(95)=25.94ms
+4 · LoadTest	Load test	2026-10-09T20:09:54.8779628Z     http_req_failed
+4 · LoadTest	Load test	2026-10-09T20:09:54.8781696Z     checks_succeeded...: 100.00% 10036 out of 10036
+4 · LoadTest	Load test	2026-10-09T20:09:54.8787203Z     http_req_duration..............: avg=15.54ms min=7.94ms med=14.03ms p(90)=21.41ms p(95)=25.94ms p(99)=50.54ms max=94.29ms
+4 · LoadTest	Load test	2026-10-09T20:09:54.8788801Z       { expected_response:true }...: avg=15.54ms min=7.94ms med=14.03ms p(90)=21.41ms p(95)=25.94ms p(99)=50.54ms max=94.29ms
+4 · LoadTest	Load test	2026-10-09T20:09:54.8790061Z     http_req_failed................: 0.00%  0 out of 10037
+4 · LoadTest	Load test	2026-10-09T20:09:54.8790846Z     http_reqs......................: 10037  33.406232/s
+4 · LoadTest	Load test	2026-10-09T20:09:54.8792697Z     iteration_duration.............: avg=2.04s   min=1.01s  med=2.05s   p(90)=2.84s   p(95)=2.93s   p(99)=3s      max=3.06s  
