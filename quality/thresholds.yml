@@ -60,7 +60,7 @@ performance:               # Week 3
     # it — so the JS fallback ('1m') is what actually runs, and it agrees with
     # this line by coincidence rather than by wiring. Change this value and
     # nothing happens. Fixing it is a two-line exercise in Week 3 §1.0.
-    ramp_down: 1m            # not yet passed by ci.yml — see Week 3 §1.0
+    ramp_down: 5m            # not yet passed by ci.yml — see Week 3 §1.0
 
 security:                  # Week 3
   enabled: true
