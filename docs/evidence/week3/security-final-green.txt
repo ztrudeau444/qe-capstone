@@ -1,0 +1,5 @@
+5 · Security	Run snyk test --file=src/talkdesk/requirements.txt --package-manager=pip --severity-threshold=high --policy-path=quality/security/.snyk	2026-10-13T18:13:08.7268497Z ^[[32m✔ Tested 15 dependencies for known issues, no vulnerable paths found.^[[39m
+5 · Security	ZAP baseline scan	2026-10-13T18:14:11.2944433Z [command]/usr/bin/docker run -v /home/runner/work/qe-capstone/qe-capstone:/zap/wrk/:rw --network=host -e ZAP_AUTH_HEADER -e ZAP_AUTH_HEADER_VALUE -e ZAP_AUTH_HEADER_SITE -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://localhost:8080 -J report_json.json -w report_md.md -r report_html.html -a -c quality/security/zap-rules.tsv
+5 · Security	ZAP baseline scan	2026-10-13T18:14:41.3964675Z IGNORE: Sec-Fetch-Dest Header is Missing [90005] x 12 
+5 · Security	ZAP baseline scan	2026-10-13T18:14:41.3968386Z INFO: Non-Storable Content [10049] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T18:14:41.3970720Z FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 0	WARN-INPROG: 0	INFO: 1	IGNORE: 1	PASS: 68

@@ -1,0 +1,5 @@
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_pages.py::test_sign_in_page_renders_the_form - Ass...
+1 failed, 2 warnings in 0.14s
