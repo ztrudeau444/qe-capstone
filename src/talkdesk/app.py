@@ -2,6 +2,7 @@
 import logging
 import os
 import traceback
+from html import escape
 import psycopg
 from psycopg.rows import dict_row
 from fastapi import FastAPI, HTTPException, Response
@@ -320,9 +321,12 @@ def page(title, body):
 def home():
     rows = list_talks()
     trs = "".join(
-        f'<tr><td><a href="/api/talks/{t["id"]}">{t["title"]}</a></td>'
-        f'<td>{t["speaker"]["name"]}</td><td>{t["track"]}</td>'
-        f'<td><span class="badge-{t["status"]}">{t["status"]}</span></td></tr>'
+        # Every value from the database is escaped before it goes into the
+        # HTML (stored cross-site scripting fix, 2026-10-13): a talk titled
+        # <script>...</script> is shown as text, not run in visitors' browsers.
+        f'<tr><td><a href="/api/talks/{int(t["id"])}">{escape(t["title"])}</a></td>'
+        f'<td>{escape(t["speaker"]["name"])}</td><td>{escape(t["track"])}</td>'
+        f'<td><span class="badge-{escape(t["status"])}">{escape(t["status"])}</span></td></tr>'
         for t in rows[:50])
     return page("Talks", f"""
 <h2>Submitted talks</h2>
