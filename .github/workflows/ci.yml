@@ -247,6 +247,14 @@ jobs:
       - uses: actions/checkout@v6
 
       # Dependencies (SCA) — what you imported
+      # Snyk works out exact library versions from what is installed, so
+      # TalkDesk's libraries are installed first, with the same Python as
+      # the Dockerfile. Pinned to a major version (Appendix A, row 10).
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install TalkDesk's libraries for Snyk
+        run: pip install -r src/talkdesk/requirements.txt
       - name: Snyk dependency scan
         uses: snyk/actions/setup@0.4.0     # pinned, per the rule at the top
       - env:
@@ -254,7 +262,9 @@ jobs:
         # No `|| true`. A gate that cannot fail is worse than no gate,
         # because it reassures. Severity comes from thresholds.yml like
         # every other number in this file.
-        run: snyk test --severity-threshold=${{ needs.config.outputs.snyk_severity }} --policy-path=quality/security/.snyk
+        # --file: TalkDesk's libraries are listed in src/talkdesk/requirements.txt,
+        # not at the repository root, where Snyk found nothing (SNYK-CLI-0008).
+        run: snyk test --file=src/talkdesk/requirements.txt --package-manager=pip --severity-threshold=${{ needs.config.outputs.snyk_severity }} --policy-path=quality/security/.snyk
 
       # Running application (DAST) — what you deployed
       - name: Start the system under test
