@@ -310,15 +310,23 @@ jobs:
           # --chromedriver-path: axe's own ChromeDriver did not match the
           # runner's Chrome (run 38454368791). GitHub's runner ships a
           # matching one and publishes its folder as $CHROMEWEBDRIVER.
-          axe http://localhost:8080/,http://localhost:8080/login \
-            --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
-            --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
-            --save reports/axe.json
+          # One axe run per page: given a comma-separated list, axe scanned
+          # it as ONE address (run 38456096627: a 404 reply, which has no
+          # title or lang). Each page now has its own run and report.
+          FAILED=0
+          for PAGE in "" login; do
+            axe "http://localhost:8080/$PAGE" \
+              --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
+              --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
+              --save "reports/axe-${PAGE:-home}.json"
+            echo "axe results for /$PAGE:"
+            python3 scripts/check-a11y.py "reports/axe-${PAGE:-home}.json" || FAILED=1
+          done
           # No `|| true` here either. Without --exit, axe returns 0 even when it
           # finds violations, so the only thing `|| true` could still swallow is
           # axe itself failing — an unreachable page, a crashed browser — which
           # is exactly the case that should stop the build.
-          python3 scripts/check-a11y.py reports/axe.json
+          exit $FAILED
         env:
           MAX_CRITICAL: ${{ needs.config.outputs.a11y_max_critical }}
           MAX_SERIOUS: ${{ needs.config.outputs.a11y_max_serious }}

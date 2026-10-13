@@ -1,0 +1,2 @@
+http://localhost:8080/,http://localhost:8080/login | document-title | serious | Documents must have <title> element to aid in navigation | [['html']]
+http://localhost:8080/,http://localhost:8080/login | html-has-lang | serious | <html> element must have a lang attribute | [['html']]
