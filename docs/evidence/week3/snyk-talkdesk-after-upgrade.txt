@@ -1,0 +1,21 @@
+
+Testing C:\Users\ZoeTrudeau\qe-capstone...
+
+Organization:      ztrudeau444
+Package manager:   pip
+Target file:       src/talkdesk/requirements.txt
+Project name:      talkdesk
+Open source:       no
+Project path:      C:\Users\ZoeTrudeau\qe-capstone
+Local Snyk policy: found
+Licenses:          enabled
+
+✔ Tested 16 dependencies for known issues, no vulnerable paths found.
+
+Tip: Detected multiple supported manifests (2), use --all-projects to scan all of them at once.
+
+Next steps:
+- Run `snyk monitor` to be notified about new related vulnerabilities.
+- Run `snyk test` as part of your CI/test.
+
+

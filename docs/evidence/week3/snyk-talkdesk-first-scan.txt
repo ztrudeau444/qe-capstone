@@ -1,0 +1,38 @@
+
+Testing C:\Users\ZoeTrudeau\qe-capstone...
+
+Tested 13 dependencies for known issues, found 7 issues, 7 vulnerable paths.
+
+
+Issues to fix by upgrading dependencies:
+
+  Pin starlette@0.41.3 to starlette@1.3.1 to fix
+  ✗ Allocation of Resources Without Limits or Throttling [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-10874054] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ HTTP Request Smuggling [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-16881242] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection') [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-17342514] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ Regular Expression Denial of Service (ReDoS) [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-13733964] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ Server-side Request Forgery (SSRF) [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-17342498] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ Allocation of Resources Without Limits or Throttling [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-17342515] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+  ✗ Use of Incorrectly-Resolved Name or Reference [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-STARLETTE-17342519] in starlette@0.41.3
+    introduced by fastapi@0.115.6 > starlette@0.41.3
+
+
+
+Organization:      ztrudeau444
+Package manager:   pip
+Target file:       src/talkdesk/requirements.txt
+Project name:      talkdesk
+Open source:       no
+Project path:      C:\Users\ZoeTrudeau\qe-capstone
+Local Snyk policy: found
+Licenses:          enabled
+
+Tip: Detected multiple supported manifests (2), use --all-projects to scan all of them at once.
+
+
