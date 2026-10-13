@@ -63,7 +63,7 @@ performance:               # Week 3
     ramp_down: 1m            # not yet passed by ci.yml — see Week 3 §1.0
 
 security:                  # Week 3
-  enabled: false
+  enabled: true
   # NOTE which of these the pipeline actually reads. ci.yml derives Snyk's
   # severity threshold from max_high alone:
   #     'high' if max_high == 0 else 'critical'
