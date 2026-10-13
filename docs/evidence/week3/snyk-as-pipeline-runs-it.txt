@@ -1,0 +1,10 @@
+
+ FATAL   No supported files found (SNYK-CLI-0008)
+                                                                                                                                                      
+           Could not detect supported target files in C:\Users\ZoeTrudeau\qe-capstone.                                                                
+           Please see our documentation for supported languages and target files: https://snyk.co/udVgQ and make sure you are in the right directory. 
+
+Docs:    https://docs.snyk.io/scan-with-snyk/error-catalog#snyk-cli-0008 
+Tip:     Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin` 
+                                                                         
+ID:      urn:snyk:interaction:0e7512c1-3d08-42ff-8acd-38733aed23b8 

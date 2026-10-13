@@ -1,4 +1,8 @@
-fastapi==0.115.6
+fastapi==0.143.0
+# starlette is pinned directly, not only through fastapi, so the version that
+# fixes Snyk's 7 findings in starlette 0.41.3 (4 High, 3 Medium) is visible
+# here, and cannot silently go back. Week 3 security, 2026-10-13.
+starlette==1.8.0
 uvicorn[standard]==0.34.0
 psycopg[binary]==3.2.3
 pydantic==2.10.4
