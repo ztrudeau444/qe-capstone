@@ -56,11 +56,10 @@ performance:               # Week 3
     virtual_users: 50
     ramp_up: 1m
     steady: 3m
-    # ramp_down is read by load.js as __ENV.RAMP_DOWN, but ci.yml does not pass
-    # it — so the JS fallback ('1m') is what actually runs, and it agrees with
-    # this line by coincidence rather than by wiring. Change this value and
-    # nothing happens. Fixing it is a two-line exercise in Week 3 §1.0.
-    ramp_down: 1m            # not yet passed by ci.yml — see Week 3 §1.0
+    # ramp_down reaches k6: ci.yml reads it in the config job and passes it
+    # as RAMP_DOWN (wired 2026-10-13, reader §1.0). Proven by setting 5m: the
+    # load test then ran 9m41s instead of 5m48s. Before that, nothing read it.
+    ramp_down: 1m
 
 security:                  # Week 3
   enabled: true

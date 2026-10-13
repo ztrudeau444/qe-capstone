@@ -49,6 +49,7 @@ jobs:
       perf_vus:      ${{ steps.read.outputs.perf_vus }}
       perf_ramp:     ${{ steps.read.outputs.perf_ramp }}
       perf_steady:   ${{ steps.read.outputs.perf_steady }}
+      perf_ramp_down: ${{ steps.read.outputs.perf_ramp_down }}
       sec_enabled:   ${{ steps.read.outputs.sec_enabled }}
       a11y_enabled:  ${{ steps.read.outputs.a11y_enabled }}
       a11y_min:      ${{ steps.read.outputs.a11y_min }}
@@ -76,6 +77,7 @@ jobs:
             echo "perf_vus=$(y "d['performance']['workload']['virtual_users']")"
             echo "perf_ramp=$(y "d['performance']['workload']['ramp_up']")"
             echo "perf_steady=$(y "d['performance']['workload']['steady']")"
+            echo "perf_ramp_down=$(y "d['performance']['workload']['ramp_down']")"
             echo "sec_enabled=$(y "str(d['security']['enabled']).lower()")"
             echo "a11y_enabled=$(y "str(d['accessibility']['enabled']).lower()")"
             echo "a11y_min=$(y "d['accessibility']['lighthouse_minimum']")"
@@ -227,6 +229,7 @@ jobs:
           VUS: ${{ needs.config.outputs.perf_vus }}
           RAMP_UP: ${{ needs.config.outputs.perf_ramp }}
           STEADY: ${{ needs.config.outputs.perf_steady }}
+          RAMP_DOWN: ${{ needs.config.outputs.perf_ramp_down }}
         run: |
           mkdir -p reports        # gitignored, so absent on a fresh checkout
           k6 run quality/performance/load.js --summary-export=reports/k6-summary.json
