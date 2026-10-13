@@ -17,8 +17,7 @@ machine. *Pipeline*: GitHub's `ubuntu-latest` runner, the same
 | Security | TalkDesk holds speakers' submissions and reviewers' decisions; SonarQube has already found hard-coded secrets (gap list #1, #11) | critical CVEs | 0 (the pipeline also blocks High: `max_high: 0`) | Snyk + ZAP |
 | Accessibility | Speakers submit and reviewers review through web pages, which must work by keyboard and screen reader | Lighthouse score | ≥ 95 | Lighthouse |
 
-Accessibility cannot be measured yet: every page renders only "Handler."
-(gap list #3, raised with the instructor 2026-10-09).
+Accessibility is measured on `/`, `/login` and `/submit` since the page template was fixed (gap list #3, PR #34); see Accessibility findings below.
 
 ## Workload model
 
@@ -69,20 +68,50 @@ purpose, run 37979508842):
 
 | ID | Severity | Finding | Decision | Owner | Review by |
 |---|---|---|---|---|---|
-| S-01 | Blocker (SonarQube) | Hard-coded database password in `app.py` (old line 11) | Fix: PR #23 | Zoe | Done 2026-10-09 |
-| S-02 | Blocker (SonarQube) | Hard-coded reviewer login and demo token in `app.py`; the review endpoint never checks the token | Accept until real sign-in is built (gap list #1); accepted in SonarQube with that comment | Zoe | Week 3 Day 3 |
-| — | — | Dependency and dynamic scans (Snyk, ZAP) | Not run yet: Day 3 | Zoe | Week 3 Day 3 |
+| S-01 | Blocker (SonarQube) | Hard-coded database password in `app.py` | Fix: PR #23 | Zoe | Done 2026-10-09 |
+| S-02 | Blocker (SonarQube) | Hard-coded reviewer login and demo token; the review endpoint never checks the token | Accept until real sign-in is built (gap list #1); accepted in SonarQube with that comment | Zoe | Week 4 |
+| S-03 | 4 High, 3 Medium (Snyk) | starlette 0.41.3, via fastapi 0.115.6: ReDoS, SSRF, request smuggling, resource exhaustion and others | Fix: fastapi 0.143.0, starlette pinned at 1.8.0; Snyk 7 -> 0 (PR #31) | Zoe | Done 2026-10-13 |
+| S-04 | ZAP: 4 FAIL, then WARNs | Missing security headers: 10020, 10021, 10038, 10055, 10063, 90004 (COEP, COOP, CORP), 10049 | Fix: headers on every reply, test-first (PR #33) | Zoe | Done 2026-10-13 |
+| S-05 | ZAP WARN | 90005 Sec-Fetch-Dest missing: a header browsers send, not TalkDesk | False positive: IGNORE in `zap-rules.tsv`, with reason | Zoe | 2027-01-13 |
+| S-06 | ZAP WARN | 10049 Non-Storable Content: the intended result of `Cache-Control: no-store` | Accept as INFO; a regression is caught by `test_security_headers.py` | Zoe | 2027-01-13 |
+| S-07 | ZAP WARN | 10202 no anti-CSRF token on `/login` | Accept as INFO: TalkDesk sets no cookies, so a forged request carries no credentials. Revisit with real sign-in | Zoe | 2027-01-13 |
+| S-08 | ZAP WARN | 10111 authentication request identified | Accept as INFO: ZAP noting a sign-in form, not a vulnerability | Zoe | 2027-01-13 |
+| S-09 | High (code review) | Stored cross-site scripting on the home page | Fix: escaping, test-first (PR #35) | Zoe | Done 2026-10-13 |
+
+**Gate result:** Snyk 0 Critical, 0 High; ZAP 0 FAIL, 0 WARN. The Security
+stage is on and enforced (PR #33).
+
+**What the scans cannot see.** ZAP runs the passive baseline scan: it looks,
+it does not attack. Its SQL injection and XSS rules never run (gap list #15).
+S-09 was found by reading the code, not by a tool.
 
 *Every "Accept" also goes in `quality/thresholds.yml` under `security.accepted`
 with the same expiry. Two places, because one is the record and the other is
-the enforcement.* (S-02 is a SonarQube code finding, not a dependency CVE, so
-it is enforced in SonarQube rather than in `security.accepted`.)
+the enforcement.* `security.accepted` is for Snyk CVEs, and none are accepted.
+S-02 is enforced in SonarQube; S-05 to S-08 are ZAP rules, enforced by
+`quality/security/zap-rules.tsv`, where each line carries its reason, owner
+and review date.
 
 ## Accessibility findings
 
 | Violation | Impact | Where | Fix | Status |
 |---|---|---|---|---|
-| Pages render only "Handler." | Nothing to audit; blocks AC-13 and AC-14 | `/`, `/submit`, `/login` | Depends on the instructor's answer | Blocked (gap list #3) |
+| Pages rendered only "Handler." | Nothing could be audited; blocked AC-13 and AC-14 | `/`, `/submit`, `/login` | Real template: page language, a title per page, a skip link, labelled navigation (PR #34) | Fixed |
+| The tools could not test the real pages | No accessibility result was trustworthy | Pipeline | See gap list #19 (PR #36) | Fixed |
+
+**Results** (run 38457918710, the first with the stage switched on):
+
+| Tool | `/` | `/login` | `/submit` |
+|---|---|---|---|
+| axe (WCAG 2.1 A/AA) | 0 critical, 0 serious | 0 critical, 0 serious | not checked |
+| pa11y (WCAG 2.0 AA) | 0 errors | 0 errors | 0 errors |
+| Lighthouse score | 95 | 95 | not checked |
+
+Lighthouse is exactly at the gate (95): it passes with no margin, and the
+missing 5 points are not yet identified (gap list #20).
+
+**Manual keyboard-only pass:** not yet done. AC-13 also requires the sign-in
+form to be completed with the keyboard alone, which no scanner checks.
 
 **Beyond the automated scan.** Roughly a third of WCAG *success criteria* are
 machine-testable; Deque measured automated detection at 57% of *issue volume*.
