@@ -278,7 +278,37 @@ def login(body: Login):
 
 
 # ────────────────────────────────────────────────────────────── HTML
-PAGE = """Handler."""
+# The shared page template. Every page fills {title} and {body}.
+# It was the planted defect PAGE = """Handler.""" (no placeholders), so every
+# page showed only that word; fixed 2026-10-13 (gap list #3).
+# Accessibility (AC-13): page language, a title per page, a skip link for
+# keyboard users, and a labelled navigation menu.
+# No inline styles or scripts: the Content-Security-Policy blocks them.
+PAGE = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} · TalkDesk</title>
+</head>
+<body>
+<a href="#main">Skip to main content</a>
+<header>
+<h1>TalkDesk</h1>
+<nav aria-label="Main">
+<ul>
+<li><a href="/">Talks</a></li>
+<li><a href="/submit">Submit a talk</a></li>
+<li><a href="/login">Reviewer sign-in</a></li>
+</ul>
+</nav>
+</header>
+<main id="main">
+{body}
+</main>
+</body>
+</html>
+"""
 
 
 def page(title, body):
