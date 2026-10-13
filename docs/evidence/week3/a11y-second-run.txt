@@ -1,0 +1,15 @@
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4222507Z ^[[36;1m# --chromedriver-path: axe's own ChromeDriver did not match the^[[0m
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4223004Z ^[[36;1m# runner's Chrome (run 38454368791). GitHub's runner ships a^[[0m
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4223449Z ^[[36;1m# matching one and publishes its folder as $CHROMEWEBDRIVER.^[[0m
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4225022Z ^[[36;1m  --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \^[[0m
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4291037Z   MAX_CRITICAL: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.4291246Z   MAX_SERIOUS: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:39:51.6080898Z Running axe-core 4.13.0 in chrome-headless
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5962496Z  critical: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5963414Z   serious: 2
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5964238Z  moderate: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5964655Z     minor: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5965130Z gates: critical <= 0, serious <= 0
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.5987020Z ##[error]2 serious violations (limit 0)
+6 · Accessibility	axe-core audit	2026-10-13T19:40:01.6000440Z ##[error]Process completed with exit code 1.
+6 · Accessibility	Run actions/upload-artifact@v4	2026-10-13T19:40:02.1874210Z (node:3317) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.

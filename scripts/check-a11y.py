@@ -45,7 +45,6 @@ if counts.get("serious", 0) > max_serious:
 if not failed:
     print("Accessibility violation gates met.")
     print("A passing gate is not the same as an accessible page — automation "
-          "covers roughly a third of WCAG success criteria. The keyboard pass
-"
+          "covers roughly a third of WCAG success criteria. The keyboard pass "
           "is yours.")
 sys.exit(1 if failed else 0)

@@ -1,0 +1,4 @@
+6 · Accessibility	axe-core audit	2026-10-13T19:26:55.3651497Z   MAX_CRITICAL: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:26:55.3651701Z   MAX_SERIOUS: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:27:24.8675369Z Error: session not created: This version of ChromeDriver only supports Chrome version 155
+6 · Accessibility	axe-core audit	2026-10-13T19:27:24.8749736Z ##[error]Process completed with exit code 2.

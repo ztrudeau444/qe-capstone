@@ -81,7 +81,7 @@ security:                  # Week 3
     #   review_by: 2026-12-01
 
 accessibility:             # Week 3
-  enabled: false
+  enabled: true
   # pa11y accepts WCAG2A / WCAG2AA / WCAG2AAA only. The axe-core step in the
   # same job carries the WCAG 2.1 criteria; this value drives pa11y.
   standard: WCAG2AA
