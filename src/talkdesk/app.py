@@ -41,11 +41,17 @@ SECURITY_HEADERS = {
     # 10038: only load scripts, styles and images from TalkDesk itself.
     # NOTE for the "Handler." page fix: this blocks inline <style>/<script>.
     # If real pages need them, change this rule on purpose; don't just loosen it.
-    "Content-Security-Policy": "default-src 'self'; frame-ancestors 'none'",
+    # 10055: form-action and base-uri do not fall back to default-src.
+    "Content-Security-Policy": (
+        "default-src 'self'; frame-ancestors 'none'; "
+        "form-action 'self'; base-uri 'self'"
+    ),
     # 10063: TalkDesk never needs the camera, microphone or location.
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     # 90004: only embed content that explicitly allows it.
     "Cross-Origin-Embedder-Policy": "require-corp",
+    # 90004: COEP's partner; other sites' windows cannot reach TalkDesk's.
+    "Cross-Origin-Opener-Policy": "same-origin",
     # 10049: replies may hold reviewers' decisions; never store them in caches.
     "Cache-Control": "no-store",
 }
