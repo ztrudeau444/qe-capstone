@@ -1,0 +1,18 @@
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4065139Z IGNORE: Sec-Fetch-Dest Header is Missing [90005] x 12 
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4065757Z 	http://localhost:8080/robots.txt (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4066286Z 	http://localhost:8080/sitemap.xml (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4066799Z 	http://localhost:8080/submit (200 OK)
+--
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4069090Z INFO: Non-Storable Content [10049] x 5 
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4069543Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4069969Z 	http://localhost:8080/login (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4070458Z 	http://localhost:8080/robots.txt (404 Not Found)
+--
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4072074Z WARN-NEW: Authentication Request Identified [10111] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4073063Z 	http://localhost:8080/api/login (422 Unprocessable Entity)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4073677Z WARN-NEW: Absence of Anti-CSRF Tokens [10202] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4074185Z 	http://localhost:8080/login (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4074827Z FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 2	WARN-INPROG: 0	INFO: 1	IGNORE: 1	PASS: 66
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4797434Z [info] By default ZAP Docker container will fail if it identifies any alerts during the scan!
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4826173Z ##[error]Scan action failed as ZAP has identified alerts, starting to analyze the results. Error: The process '/usr/bin/docker' failed with exit code 2
+5 · Security	ZAP baseline scan	2026-10-13T18:38:34.4836447Z Artifact name is valid!
