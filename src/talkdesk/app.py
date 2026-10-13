@@ -52,6 +52,8 @@ SECURITY_HEADERS = {
     "Cross-Origin-Embedder-Policy": "require-corp",
     # 90004: COEP's partner; other sites' windows cannot reach TalkDesk's.
     "Cross-Origin-Opener-Policy": "same-origin",
+    # 90004, third of the trio: other sites may not load TalkDesk's replies.
+    "Cross-Origin-Resource-Policy": "same-origin",
     # 10049: replies may hold reviewers' decisions; never store them in caches.
     "Cache-Control": "no-store",
 }
