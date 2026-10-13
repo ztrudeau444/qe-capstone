@@ -1,0 +1,12 @@
+3 · Analyze	Fetch the coverage report from the Test stage	2026-10-13T17:30:40.0658480Z (node:2417) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+3 · Analyze	SonarQube Cloud analysis	2026-10-13T17:31:13.2830509Z 17:31:13.282 INFO  55 rules with 'symbolic-execution' tag raised 0 out of 0 issues
+5 · Security	Run snyk test --file=src/talkdesk/requirements.txt --package-manager=pip --severity-threshold=high --policy-path=quality/security/.snyk	2026-10-13T17:32:13.5415424Z ^[[32m✔ Tested 15 dependencies for known issues, no vulnerable paths found.^[[39m
+5 · Security	ZAP baseline scan	2026-10-13T17:33:11.9539081Z [command]/usr/bin/docker run -v /home/runner/work/qe-capstone/qe-capstone:/zap/wrk/:rw --network=host -e ZAP_AUTH_HEADER -e ZAP_AUTH_HEADER_VALUE -e ZAP_AUTH_HEADER_SITE -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://localhost:8080 -J report_json.json -w report_md.md -r report_html.html -a -c quality/security/zap-rules.tsv
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6889528Z WARN-NEW: Storable and Cacheable Content [10049] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6890513Z WARN-NEW: Cross-Origin-Embedder-Policy Header Missing or Invalid [90004] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6891249Z WARN-NEW: Sec-Fetch-Dest Header is Missing [90005] x 12 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6892472Z FAIL-NEW: Missing Anti-clickjacking Header [10020] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6893989Z FAIL-NEW: X-Content-Type-Options Header Missing [10021] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6894660Z FAIL-NEW: Content Security Policy (CSP) Header Not Set [10038] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6895191Z FAIL-NEW: Permissions Policy Header Not Set [10063] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:33:38.6895742Z FAIL-NEW: 4	FAIL-INPROG: 0	WARN-NEW: 3	WARN-INPROG: 0	INFO: 0	IGNORE: 0	PASS: 63

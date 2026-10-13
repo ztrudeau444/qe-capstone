@@ -1,0 +1,13 @@
+Read thresholds	Run y() { python3 -c "import sys,yaml;d=yaml.safe_load(open('quality/thresholds.yml'));print(eval(sys.argv[1],{},{'d':d}))" "$1"; }	2026-10-13T17:55:31.0877349Z ^[[36;1m  echo "perf_err=$(y "d['performance']['error_rate']")"^[[0m
+1 · Build	Run ./.github/actions/setup-profile	2026-10-13T17:55:41.4846292Z (node:2306) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2 · Test	Run ./.github/actions/setup-profile	2026-10-13T17:56:27.8522252Z (node:2483) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2 · Test	Publish test report	2026-10-13T17:56:46.4157753Z (node:2649) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+4 · LoadTest	Run actions/upload-artifact@v4	2026-10-13T18:04:17.0693426Z (node:14432) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+5 · Security	ZAP baseline scan	2026-10-13T18:00:34.1997725Z IGNORE: Sec-Fetch-Dest Header is Missing [90005] x 11 
+5 · Security	ZAP baseline scan	2026-10-13T18:00:34.1999705Z INFO: Non-Storable Content [10049] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T18:00:34.2001512Z WARN-NEW: Cross-Origin-Resource-Policy Header Missing or Invalid [90004] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T18:00:34.2002605Z FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 1	WARN-INPROG: 0	INFO: 1	IGNORE: 1	PASS: 67
+5 · Security	ZAP baseline scan	2026-10-13T18:00:34.2746298Z ##[error]Scan action failed as ZAP has identified alerts, starting to analyze the results. Error: The process '/usr/bin/docker' failed with exit code 2
+Quality summary	Fail the run if any stage failed	2026-10-13T18:04:22.2476764Z ^[[36;1m  echo "::error::$bad stage(s) failed or were cancelled."^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T18:04:22.2689785Z ##[error]1 stage(s) failed or were cancelled.
+Quality summary	Fail the run if any stage failed	2026-10-13T18:04:22.2698923Z ##[error]Process completed with exit code 1.

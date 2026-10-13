@@ -1,0 +1,60 @@
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6978435Z PASS: Insecure JSF ViewState [90001]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6978700Z PASS: Java Serialization Object [90002]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6979016Z PASS: Sub Resource Integrity Attribute Missing [90003]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6979326Z PASS: Charset Mismatch [90011]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6979589Z PASS: Application Error Disclosure [90022]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6979873Z PASS: WSDL File Detection [90030]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6980400Z PASS: Loosely Scoped Cookie [90033]
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6980794Z WARN-NEW: Missing Anti-clickjacking Header [10020] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6981226Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6981578Z WARN-NEW: X-Content-Type-Options Header Missing [10021] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6981935Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6982270Z WARN-NEW: Content Security Policy (CSP) Header Not Set [10038] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6982634Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6982913Z WARN-NEW: Storable and Cacheable Content [10049] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6983218Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6983515Z 	http://localhost:8080/robots.txt (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6983843Z 	http://localhost:8080/sitemap.xml (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6984193Z WARN-NEW: Permissions Policy Header Not Set [10063] x 1 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6984514Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6984880Z WARN-NEW: Cross-Origin-Embedder-Policy Header Missing or Invalid [90004] x 3 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6985285Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6985522Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6985758Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6987978Z WARN-NEW: Sec-Fetch-Dest Header is Missing [90005] x 10 
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6988759Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6989216Z 	http://localhost:8080/robots.txt (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6989753Z 	http://localhost:8080/sitemap.xml (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6990527Z 	http://localhost:8080 (200 OK)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6990978Z 	http://localhost:8080/robots.txt (404 Not Found)
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.6991647Z FAIL-NEW: 0	FAIL-INPROG: 0	WARN-NEW: 7	WARN-INPROG: 0	INFO: 0	IGNORE: 0	PASS: 63
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.7639889Z [info] By default ZAP Docker container will fail if it identifies any alerts during the scan!
+5 · Security	ZAP baseline scan	2026-10-13T17:13:45.7675857Z ##[error]Scan action failed as ZAP has identified alerts, starting to analyze the results. Error: The process '/usr/bin/docker' failed with exit code 2
+5 · Security	ZAP baseline scan	2026-10-13T17:13:46.0452878Z Alerts present in the current report: true
+5 · Security	ZAP baseline scan	2026-10-13T17:13:46.1734940Z [@octokit/request] "POST https://api.github.com/repos/ztrudeau444/qe-capstone/issues" is deprecated. It is scheduled to be removed on Fri, 10 Mar 2028 00:00:00 GMT. See https://docs.github.com/en/rest/about-the-rest-api/api-versions
+5 · Security	ZAP baseline scan	2026-10-13T17:13:46.1785895Z POST /repos/ztrudeau444/qe-capstone/issues - 403 with id 5858:259176:12A6401:3C7E2C4:6ACE66CA in 133ms
+5 · Security	ZAP baseline scan	2026-10-13T17:13:46.1788783Z ##[error]Resource not accessible by integration - https://docs.github.com/rest/issues/issues#create-an-issue
+Quality summary	Fail the run if any stage failed	﻿2026-10-13T17:17:52.5752836Z ##[group]Run bad=0
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5753364Z ^[[36;1mbad=0^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5754013Z ^[[36;1m# config first, and it matters more than the rest: if thresholds.yml^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5755349Z ^[[36;1m# is malformed every downstream job is SKIPPED, not failed, so a loop^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5756305Z ^[[36;1m# that omits config counts zero failures and reports success on a^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5757228Z ^[[36;1m# pipeline that never ran. That is the state branch protection is^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5757996Z ^[[36;1m# most likely to be pointed at.^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5758621Z ^[[36;1mfor r in "success" "success" "success" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5759241Z ^[[36;1m         "success" "success" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5759805Z ^[[36;1m         "failure" "skipped" \^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5760380Z ^[[36;1m         "skipped" "skipped"; do^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5760933Z ^[[36;1m  case "$r" in^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5761694Z ^[[36;1m    failure|cancelled) bad=$((bad + 1)) ;;^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5762316Z ^[[36;1m  esac^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5762747Z ^[[36;1mdone^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5763189Z ^[[36;1mif [ "$bad" -gt 0 ]; then^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5763834Z ^[[36;1m  echo "::error::$bad stage(s) failed or were cancelled."^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5764652Z ^[[36;1m  exit 1^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5765085Z ^[[36;1mfi^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5765525Z ^[[36;1mecho "No stage failed."^[[0m
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5826454Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5827133Z ##[endgroup]
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5956671Z ##[error]1 stage(s) failed or were cancelled.
+Quality summary	Fail the run if any stage failed	2026-10-13T17:17:52.5966805Z ##[error]Process completed with exit code 1.

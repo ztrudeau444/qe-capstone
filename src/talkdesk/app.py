@@ -30,6 +30,51 @@ MAX_TITLE_LENGTH = 200
 app = FastAPI(title="TalkDesk", docs_url=None, redoc_url=None)
 
 
+# Security headers: instructions every reply gives the browser. Added after the
+# first ZAP baseline scan (2026-10-13) reported each one missing; the ZAP rule
+# number is next to each. Week 3 security, docs/NFT-Strategy.md.
+SECURITY_HEADERS = {
+    # 10020: other sites may not show TalkDesk inside a frame (clickjacking).
+    "X-Frame-Options": "DENY",
+    # 10021: browsers must not guess a reply's type.
+    "X-Content-Type-Options": "nosniff",
+    # 10038: only load scripts, styles and images from TalkDesk itself.
+    # NOTE for the "Handler." page fix: this blocks inline <style>/<script>.
+    # If real pages need them, change this rule on purpose; don't just loosen it.
+    # 10055: form-action and base-uri do not fall back to default-src.
+    "Content-Security-Policy": (
+        "default-src 'self'; frame-ancestors 'none'; "
+        "form-action 'self'; base-uri 'self'"
+    ),
+    # 10063: TalkDesk never needs the camera, microphone or location.
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    # 90004: only embed content that explicitly allows it.
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    # 90004: COEP's partner; other sites' windows cannot reach TalkDesk's.
+    "Cross-Origin-Opener-Policy": "same-origin",
+    # 90004, third of the trio: other sites may not load TalkDesk's replies.
+    "Cross-Origin-Resource-Policy": "same-origin",
+    # 10049: replies may hold reviewers' decisions; never store them in caches.
+    "Cache-Control": "no-store",
+}
+
+
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    """Add SECURITY_HEADERS to every reply, including errors such as 404.
+
+    Steps:
+      1. Let TalkDesk handle the request as usual.
+      2. Add each security header, unless the reply already set its own.
+      3. Hand the reply back.
+    """
+    response = await call_next(request)
+    for name, value in SECURITY_HEADERS.items():
+        response.headers.setdefault(name, value)
+    logger.debug("security headers added to %s %s", request.method, request.url.path)
+    return response
+
+
 @app.exception_handler(Exception)
 async def verbose_error_handler(request, exc):
     """Turn any unhandled error into a 500 reply.
