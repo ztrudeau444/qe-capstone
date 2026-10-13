@@ -273,9 +273,17 @@ jobs:
         uses: zaproxy/action-baseline@v0.15.0
         with:
           target: http://localhost:8080
-          rules_file_name: quality/security/zap-rules.tsv
-          cmd_options: '-a'
+          # rules_file_name was accepted but never passed to ZAP: run
+          # 38436325721 ran `zap-baseline.py ... -a` with no -c, so every rule
+          # in zap-rules.tsv was ignored (FAIL rules came out as WARN). The
+          # file is passed directly instead; the path is relative to /zap/wrk,
+          # which is the repository root inside ZAP's container.
+          cmd_options: '-a -c quality/security/zap-rules.tsv'
           fail_action: true
+          # The action tries to open a GitHub issue with its report. This
+          # workflow does not grant `issues: write`, so that failed with 403.
+          # The findings are in the job log and in docs/NFT-Strategy.md.
+          allow_issue_writing: false
 
   # -------------------------------------------------------------- 6. A11y
   a11y:
