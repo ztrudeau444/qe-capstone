@@ -1,0 +1,47 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\ZoeTrudeau\qe-capstone\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collecting ... collected 2 items
+
+src/tests/unit/test_list_talks.py::test_newest_talks_come_first FAILED   [ 50%]
+src/tests/unit/test_list_talks.py::test_filters_still_apply_with_newest_first FAILED [100%]
+
+================================== FAILURES ===================================
+________________________ test_newest_talks_come_first _________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001FF995E1790>
+
+    def test_newest_talks_come_first(monkeypatch):
+        sql = run_list_talks(monkeypatch)
+>       assert "ORDER BY t.id DESC" in sql, "oldest talks first: new ones never show"
+E       AssertionError: oldest talks first: new ones never show
+E       assert 'ORDER BY t.id DESC' in 'SELECT t.*, s.name AS speaker_name FROM talks t JOIN speakers s ON s.id = t.speaker_id WHERE 1=1 ORDER BY t.id LIMIT 100'
+
+src\tests\unit\test_list_talks.py:41: AssertionError
+_________________ test_filters_still_apply_with_newest_first __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001FF995E2480>
+
+    def test_filters_still_apply_with_newest_first(monkeypatch):
+        sql = run_list_talks(monkeypatch, track="testing", status="submitted")
+        assert "t.track = %s" in sql and "t.status = %s" in sql
+>       assert sql.rstrip().endswith("ORDER BY t.id DESC LIMIT 100")
+E       AssertionError: assert False
+E        +  where False = <built-in method endswith of str object at 0x000001FF995B5620>('ORDER BY t.id DESC LIMIT 100')
+E        +    where <built-in method endswith of str object at 0x000001FF995B5620> = 'SELECT t.*, s.name AS speaker_name FROM talks t JOIN speakers s ON s.id = t.speaker_id WHERE 1=1 AND t.track = %s AND t.status = %s ORDER BY t.id LIMIT 100'.endswith
+E        +      where 'SELECT t.*, s.name AS speaker_name FROM talks t JOIN speakers s ON s.id = t.speaker_id WHERE 1=1 AND t.track = %s AND t.status = %s ORDER BY t.id LIMIT 100' = <built-in method rstrip of str object at 0x000001FF995B5620>()
+E        +        where <built-in method rstrip of str object at 0x000001FF995B5620> = 'SELECT t.*, s.name AS speaker_name FROM talks t JOIN speakers s ON s.id = t.speaker_id WHERE 1=1 AND t.track = %s AND t.status = %s ORDER BY t.id LIMIT 100'.rstrip
+
+src\tests\unit\test_list_talks.py:48: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_list_talks.py::test_newest_talks_come_first - Asse...
+FAILED src/tests/unit/test_list_talks.py::test_filters_still_apply_with_newest_first
+======================== 2 failed, 1 warning in 0.16s =========================

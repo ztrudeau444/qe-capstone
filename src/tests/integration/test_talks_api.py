@@ -36,13 +36,14 @@ def test_unknown_speaker_is_rejected(api, database):
 
 @pytest.mark.integration
 def test_listing_filters_by_track(api):
-    """AC-07: only talks in the requested track, at most 100, in ascending ID order."""
+    """AC-07: only talks in the requested track, at most 100, newest (highest ID) first."""
     talks = api.list_talks(track="testing").json()
     assert talks, "the seed data should contain talks in the testing track"
     assert all(t["track"] == "testing" for t in talks)
     assert len(talks) <= 100
     ids = [t["id"] for t in talks]
-    assert ids == sorted(ids)
+        # Newest first since gap list #21 (PR #48): new talks must make the 100.
+    assert ids == sorted(ids, reverse=True)
 
 
 @pytest.mark.integration
