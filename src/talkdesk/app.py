@@ -143,7 +143,7 @@ def utc_timestamp(value):
 
 @app.get("/api/talks")
 def list_talks(track: Optional[str] = None, status: Optional[str] = None):
-    """List up to 100 talks, optionally filtered by track and/or status."""
+    """List the newest 100 talks, optionally filtered by track and/or status."""
     # One query fetches the talks AND their speakers' names (a JOIN), instead
     # of one query for the talks plus one more per talk (the old N+1: 101
     # database round trips per request). Week 3 tuning experiment,
@@ -155,7 +155,9 @@ def list_talks(track: Optional[str] = None, status: Optional[str] = None):
         sql += " AND t.track = %s"; args.append(track)
     if status:
         sql += " AND t.status = %s"; args.append(status)
-    sql += " ORDER BY t.id LIMIT 100"
+        # Newest first (gap list #21): oldest-first meant a new talk (id 50001)
+    # never made the 100. id is the primary key, so this sort stays indexed.
+    sql += " ORDER BY t.id DESC LIMIT 100"
 
     with db() as conn:
         rows = conn.execute(sql, args).fetchall()
