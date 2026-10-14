@@ -344,8 +344,67 @@ def home():
 
 @app.get("/submit", response_class=HTMLResponse)
 def submit_form():
-    """The talk-submission page."""
-    return page("Submit a talk", """Handler.""")
+    """The talk-submission page (gap list #18: was the placeholder "Handler.").
+
+    The track choices come from TRACKS, the same list the rules check, so the
+    form can never offer a track that validate_new_talk() would reject.
+    """
+    options = "".join(
+        f'<option value="{t}">{t.capitalize()}</option>' for t in sorted(TRACKS))
+    return page("Submit a talk", f"""
+<h2>Submit a talk</h2>
+<form method="post" action="/submit">
+  <p><label for="speaker_id">Speaker ID</label><br>
+  <input id="speaker_id" name="speaker_id" type="number" min="1" required></p>
+  <p><label for="title">Title</label><br>
+  <input id="title" name="title" type="text" maxlength="{MAX_TITLE_LENGTH}" required></p>
+  <p><label for="abstract">Abstract (optional)</label><br>
+  <textarea id="abstract" name="abstract" rows="6"></textarea></p>
+  <p><label for="track">Track</label><br>
+  <select id="track" name="track" required>
+{options}
+  </select></p>
+  <p><button type="submit">Submit talk</button></p>
+</form>""")
+
+@app.post("/submit", response_class=HTMLResponse)
+async def submit_talk(request: Request):
+    """The talk form sends its details here (gap list #18).
+
+    The details go to create_talk(), the same code as POST /api/talks, so the
+    form and the API follow the same rules. A broken rule comes back as a
+    readable page with a way back to the form, not raw JSON.
+    """
+    form = parse_qs((await request.body()).decode("utf-8"), keep_blank_values=True)
+
+    def field(name):
+        return form.get(name, [""])[0]
+
+    try:
+        speaker_id = int(field("speaker_id"))
+    except ValueError:
+        return submit_failed(400, "Speaker ID must be a number.")
+    try:
+        talk = create_talk(NewTalk(speaker_id=speaker_id, title=field("title"),
+                                   abstract=field("abstract"), track=field("track")))
+    except HTTPException as e:
+        return submit_failed(e.status_code, e.detail)
+    resp = page("Talk submitted", f"""
+<h2>Thanks! Your talk was submitted</h2>
+<p>&ldquo;{escape(talk["title"])}&rdquo; is now waiting for review.</p>
+<p><a href="/">See all talks</a></p>""")
+    resp.status_code = 201
+    return resp
+
+
+def submit_failed(status, message):
+    """A readable 'not submitted' page with a way back to the form."""
+    resp = page("Submission failed", f"""
+<h2>Your talk was not submitted</h2>
+<p>{escape(str(message))}</p>
+<p><a href="/submit">Try again</a></p>""")
+    resp.status_code = status
+    return resp
 
 
 @app.get("/login", response_class=HTMLResponse)
