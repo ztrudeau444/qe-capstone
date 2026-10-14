@@ -143,3 +143,37 @@ and the strongest slide in your Week 4 defence.*
 **The delta and its cause, in one sentence:** Laptop p95 latency dropped from 1,130 ms to 21 ms because the JOIN fetched talks and speakers in one database query instead of 101.
 
 **What you would try next.** Search is now the next bottleneck, with 39 ms p95, because it reads every title as the database grows. I would investigate search optimization and try an open workload model using constant-arrival-rate to test performance at a fixed request rate.
+
+## Dashboard (gate 7)
+
+Made with `scripts/k6-dashboard.py` from the two laptop runs of the tuning
+experiment (same workload: 50 virtual users, 1m ramp-up, 3m steady, 1m ramp-down).
+Each point is a 10-second window.
+
+| Run | p50 | p95 | p99 | Throughput | Requests | Errors |
+|---|---|---|---|---|---|---|
+| Before JOIN fix | 68 ms | 1,133 ms | 1,438 ms | 26.8 req/s | 8,049 | 0.00% |
+| After JOIN fix | 14 ms | 21 ms | 38 ms | 33.6 req/s | 10,045 | 0.00% |
+
+![Before JOIN fix](evidence/week3/dashboard-before.png)
+![After JOIN fix](evidence/week3/dashboard-after.png)
+
+**Insight 1: the tail hid behind a healthy median.** Before the fix, the typical
+request (p50) took 68 ms, but 1 in 20 took over 1,100 ms, about 17 times longer.
+An average would have looked acceptable while real users waited more than a
+second. That is why the gate is on p95, not the mean. After the fix the three
+lines sit close together (14, 21 and 38 ms), so the slow tail is gone.
+
+**Insight 2: before the fix, more users meant slower answers.** p95 crossed the
+500 ms gate about 40 seconds in, while users were still ramping up, stayed above
+it during the steady phase, and dropped back during ramp-down. Latency followed
+the load, which is what the N+1 query does: every list request made 101 database
+trips, so more users meant a longer queue at the database. After the fix the
+lines stay flat through the whole ramp, so this load no longer moves response time.
+
+**Also noted:** with the same 50 users, the fixed version handled 25% more
+requests (8,049 to 10,045). In a closed model each user waits for an answer
+before asking again, so faster answers mean more requests in the same time.
+
+These are laptop runs. In the pipeline the fix made no measurable difference,
+because database trips there were already fast (see the tuning experiment above).
