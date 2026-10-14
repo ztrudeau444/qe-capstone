@@ -1,0 +1,41 @@
+HTTP/1.1 404 Not Found
+date: Wed, 14 Oct 2026 17:23:31 GMT
+server: uvicorn
+content-length: 578
+content-type: text/html; charset=utf-8
+x-frame-options: DENY
+x-content-type-options: nosniff
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'
+permissions-policy: camera=(), microphone=(), geolocation=()
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+cache-control: no-store
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submission failed · TalkDesk</title>
+</head>
+<body>
+<a href="#main">Skip to main content</a>
+<header>
+<h1>TalkDesk</h1>
+<nav aria-label="Main">
+<ul>
+<li><a href="/">Talks</a></li>
+<li><a href="/submit">Submit a talk</a></li>
+<li><a href="/login">Reviewer sign-in</a></li>
+</ul>
+</nav>
+</header>
+<main id="main">
+
+<h2>Your talk was not submitted</h2>
+<p>speaker not found</p>
+<p><a href="/submit">Try again</a></p>
+</main>
+</body>
+</html>
