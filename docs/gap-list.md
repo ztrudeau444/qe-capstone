@@ -44,7 +44,7 @@ Work through all four before ranking:
 | 21 | **New talks never appear in the list.** It returns the first 100 talks by id, so newer submissions are invisible. Fixed: the list now returns the newest 100 (descending id, still the indexed key; the load-test p95 gate stayed green). AC-07 changed from "ascending ID order" to newest first, since the old wording itself caused this gap. | Load testing | Med | M | Zoe | 2026-10-14 | ☒ PR #48 |
 | 22 | **Search is the next bottleneck** (p95 39 ms after the N+1 fix): it reads every title, and the table grows with every submission. | Tuning experiment | Low | M | Zoe | Week 4 | ☐ |
 | 23 | **`ramp_down` in `thresholds.yml` is read by nothing**: `ci.yml` does not pass `RAMP_DOWN` (reader §1.0 exercise). | Reader §1.0 | Low | S | Zoe | Week 3 | ☐ |
-| 25 | **Test client deprecation warning:** starlette warns that its test client's use of `httpx` is deprecated (it suggests `httpx2`). Harmless today; could break on a future upgrade. Split out of #24. | Test warnings | Low | S | Zoe | Week 4 | ☐ |
+| 24 | **Small code issues found in passing:** in `check-a11y.py`, `... + len(nodes) or 1` groups the `or` wrongly (miscount in a rare case); starlette warns that its test client's use of `httpx` is deprecated. Fixed: the `or 1` now applies to each violation's nodes, so two node-less critical violations count as 2 and fail a limit of 1. The httpx warning moved to #25. | Code reading, test warnings | Low | S | Zoe | 2026-10-14 | ☒ PR #46 |
 | 26 | **Only the newest 100 talks can be listed.** Older talks are reachable only by search or by id; there is no "next page". Found while fixing #21. | Code, while fixing #21 | Low | M | Zoe | Week 4 | ☐ |
 
 ## Accepted, not closed
