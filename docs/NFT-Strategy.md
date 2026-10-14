@@ -177,3 +177,33 @@ before asking again, so faster answers mean more requests in the same time.
 
 These are laptop runs. In the pipeline the fix made no measurable difference,
 because database trips there were already fast (see the tuning experiment above).
+
+## Stress test: finding the knee
+
+`quality/performance/stress.js`, run on the laptop with `-e SOAK=0`: the
+starter's shape (0→100→200→400→0 users, 2 minutes each, GET `/`, no think
+time). Evidence: `evidence/week3/stress-run.txt`.
+
+![Stress test](evidence/week3/dashboard-stress.png)
+
+| Requests | Errors | p50 | p95 | p99 | Throughput |
+|---|---|---|---|---|---|
+| 41,676 | 0.00% | 1,838 ms | 4,365 ms | 4,640 ms | 86.8 req/s |
+
+**The knee:** throughput reached about 88 req/s within the first 10–20 seconds
+(about 10–15 users) and stayed flat for the rest of the run. Every user after
+that added waiting time, not throughput. p95 crossed the 500 ms gate at about
+20 users and reached about 4.7 s at 400 users, which matches
+users ÷ throughput (400 ÷ 88 ≈ 4.5 s).
+
+**How it broke:** it did not fail, it queued. There were no errors even at 400
+users, and response times fell back under 500 ms as users dropped away, so it
+recovered by itself.
+
+**Caveat:** stress users have no think time, so they are much busier than the
+load test's users. At about 34 req/s per 50 load-test users, the laptop ceiling
+of about 88 req/s is roughly 130 load-test users. That is a rough estimate,
+because the load test also used other pages.
+
+**Not done yet:** the 60-minute soak (leak hunting), and a finer ramp from 0 to
+20 users to show the curve before the knee.
