@@ -308,7 +308,7 @@ jobs:
           # No --exit. That fails on ANY violation, which is stricter than the
           # threshold this program declares and is not read from thresholds.yml
           # at all. Save the report, then judge it against the declared limits.
-          # Both pages users reach; AC-13 is about /login, which the
+          # Every page users reach; AC-13 is about /login, which the
           # starter never checked. check-a11y.py reads one result per page.
           # --chromedriver-path: axe's own ChromeDriver did not match the
           # runner's Chrome (run 38454368791). GitHub's runner ships a
@@ -317,7 +317,7 @@ jobs:
           # it as ONE address (run 38456096627: a 404 reply, which has no
           # title or lang). Each page now has its own run and report.
           FAILED=0
-          for PAGE in "" login; do
+          for PAGE in "" login submit; do
             axe "http://localhost:8080/$PAGE" \
               --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
               --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
@@ -350,7 +350,7 @@ jobs:
           # page: AC-13 is about /login, which the starter never scored.
           MIN=${{ needs.config.outputs.a11y_min }}
           FAILED=0
-          for PAGE in "" login; do
+          for PAGE in "" login submit; do
             REPORT="reports/lighthouse-${PAGE:-home}.json"
             lighthouse "http://localhost:8080/$PAGE" \
               --only-categories=accessibility \
