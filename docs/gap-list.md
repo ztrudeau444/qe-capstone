@@ -21,7 +21,7 @@ Work through all four before ranking:
 
 | # | Gap | Source | Risk if shipped | Effort | Owner | Target day | Done |
 |---|---|---|---|---|---|---|---|
-| 25 | **Speakers must know their Speaker ID number** to submit a talk. Real speakers don't know it; the form should ask for name and email instead. Needs an API change, since `NewTalk` takes `speaker_id`. | Using the new /submit form (gap #18) | Low | M | Zoe | Week 4 | ☐ |
+| 1 | **Anyone can review a talk.** `PATCH /api/talks/{id}` never checks for a sign-in token, so anyone can accept, reject or score any talk. Not one of the nine planted defects; found while writing AC-17. Related: the login accepts a hard-coded password (`reviewer`) and hands out a fixed demo token; SonarQube flagged the token, and the issue was accepted on 2026-10-09 with a comment pointing to this gap. | Found while testing (AC-17) | High | M | Zoe | Week 3 (security) | ☐ |
 | 2 | **Error replies expose internals** (D-7): a bad talk ID returns the exception, message and full traceback. | `acceptance-criteria.md`: AC-11 has no test | High | S | Zoe | Week 3 (security) | ☐ |
 | 3 | **The web pages rendered only "Handler."** A planted defect (confirmed by the instructor, 2026-10-09): the shared page template had no {title} or {body} placeholders. Fixed test-first; unblocks AC-13 and AC-14. | Ledger: E2E rows unticked | High | S | Zoe | 2026-10-13 | ☒ PR #34 |
 | 4 | **Snyk did not scan TalkDesk's dependencies.** The pipeline ran `snyk test` at the repository root, found no manifest and failed (SNYK-CLI-0008); now pointed at `src/talkdesk/requirements.txt`. The Snyk GitHub app's own check still does not watch that file. | Pipeline: Snyk check | Med | S | Zoe | 2026-10-13 | ☒ PR #32 (pipeline) |
@@ -45,7 +45,9 @@ Work through all four before ranking:
 | 22 | **Search is the next bottleneck** (p95 39 ms after the N+1 fix): it reads every title, and the table grows with every submission. | Tuning experiment | Low | M | Zoe | Week 4 | ☐ |
 | 23 | **`ramp_down` in `thresholds.yml` is read by nothing**: `ci.yml` does not pass `RAMP_DOWN` (reader §1.0 exercise). | Reader §1.0 | Low | S | Zoe | Week 3 | ☐ |
 | 24 | **Small code issues found in passing:** in `check-a11y.py`, `... + len(nodes) or 1` groups the `or` wrongly (miscount in a rare case); starlette warns that its test client's use of `httpx` is deprecated. Fixed: the `or 1` now applies to each violation's nodes, so two node-less critical violations count as 2 and fail a limit of 1. The httpx warning moved to #25. | Code reading, test warnings | Low | S | Zoe | 2026-10-14 | ☒ PR #46 |
+| 25 | **Test client deprecation warning:** starlette warns that its test client's use of `httpx` is deprecated (it suggests `httpx2`). Harmless today; could break on a future upgrade. Split out of #24. | Test warnings | Low | S | Zoe | Week 4 | ☐ |
 | 26 | **Only the newest 100 talks can be listed.** Older talks are reachable only by search or by id; there is no "next page". Found while fixing #21. | Code, while fixing #21 | Low | M | Zoe | Week 4 | ☐ |
+| 27 | **Speakers must know their Speaker ID number** to submit a talk. Real speakers don't know it; the form should ask for name and email instead. Needs an API change, since `NewTalk` takes `speaker_id`. | Using the new /submit form (gap #18) | Low | M | Zoe | Week 4 | ☐ |
 
 ## Accepted, not closed
 
