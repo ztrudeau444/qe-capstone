@@ -23,7 +23,9 @@ counts = {"critical": 0, "serious": 0, "moderate": 0, "minor": 0}
 for run in runs:
     for v in run.get("violations", []):
         impact = v.get("impact") or "minor"
-        counts[impact] = counts.get(impact, 0) + len(v.get("nodes", [])) or 1
+                # Brackets matter (gap list #24): "or 1" applies to this violation's
+        # nodes, so a violation with no nodes listed still counts as one.
+        counts[impact] = counts.get(impact, 0) + (len(v.get("nodes", [])) or 1)
 
 max_critical = int(os.environ.get("MAX_CRITICAL", 0))
 max_serious = int(os.environ.get("MAX_SERIOUS", 0))
