@@ -1,0 +1,19 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\ZoeTrudeau\qe-capstone\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collecting ... collected 4 items
+
+src/tests/unit/test_error_replies.py::test_reply_has_no_exception_name_traceback_or_paths PASSED [ 25%]
+src/tests/unit/test_error_replies.py::test_reply_is_a_general_message_with_a_reference PASSED [ 50%]
+src/tests/unit/test_error_replies.py::test_error_reply_keeps_the_security_headers PASSED [ 75%]
+src/tests/unit/test_error_replies.py::test_details_go_to_the_server_log_under_the_same_reference PASSED [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 4 passed, 1 warning in 0.06s =========================
