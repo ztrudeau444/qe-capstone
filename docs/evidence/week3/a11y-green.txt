@@ -1,0 +1,16 @@
+6 · Accessibility	axe-core audit	2026-10-13T19:53:14.5891692Z ^[[36;1m  echo "axe results for /$PAGE:"^[[0m
+6 · Accessibility	axe-core audit	2026-10-13T19:53:25.7921555Z axe results for /:
+6 · Accessibility	axe-core audit	2026-10-13T19:53:25.8090421Z  critical: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:53:25.8090705Z   serious: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:53:25.8091691Z Accessibility violation gates met.
+6 · Accessibility	axe-core audit	2026-10-13T19:53:27.4584449Z axe results for /login:
+6 · Accessibility	axe-core audit	2026-10-13T19:53:27.4761806Z  critical: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:53:27.4762106Z   serious: 0
+6 · Accessibility	axe-core audit	2026-10-13T19:53:27.4763351Z Accessibility violation gates met.
+6 · Accessibility	pa11y — the WCAG 2.0 AA rule sweep	2026-10-13T19:53:30.8586087Z  > http://localhost:8080/ - 0 errors
+6 · Accessibility	pa11y — the WCAG 2.0 AA rule sweep	2026-10-13T19:53:33.4876313Z  > http://localhost:8080/login - 0 errors
+6 · Accessibility	pa11y — the WCAG 2.0 AA rule sweep	2026-10-13T19:53:36.1344372Z  > http://localhost:8080/submit - 0 errors
+6 · Accessibility	pa11y — the WCAG 2.0 AA rule sweep	2026-10-13T19:53:36.2058926Z ✔ 3/3 URLs passed
+6 · Accessibility	Lighthouse accessibility score	2026-10-13T19:53:36.2169872Z ^[[36;1m  echo "Accessibility score for /$PAGE: $SCORE (gate: >= $MIN)"^[[0m
+6 · Accessibility	Lighthouse accessibility score	2026-10-13T19:53:46.6119073Z Accessibility score for /: 95 (gate: >= 95)
+6 · Accessibility	Lighthouse accessibility score	2026-10-13T19:53:56.7308855Z Accessibility score for /login: 95 (gate: >= 95)

@@ -110,8 +110,12 @@ and review date.
 Lighthouse is exactly at the gate (95): it passes with no margin, and the
 missing 5 points are not yet identified (gap list #20).
 
-**Manual keyboard-only pass:** not yet done. AC-13 also requires the sign-in
-form to be completed with the keyboard alone, which no scanner checks.
+**Manual keyboard-only pass:** done on /login, 2026-10-14 (AC-13). Focus is
+visible, the Tab order is logical, the skip link jumps past the menu, there are
+no keyboard traps, and the sign-in form can be filled and submitted with the
+keyboard alone. Submitting shows a raw 422 error page with no way back except
+the browser's Back key (gap #17). Evidence:
+`docs/evidence/week3/keyboard-pass-login.md`.
 
 **Beyond the automated scan.** Roughly a third of WCAG *success criteria* are
 machine-testable; Deque measured automated detection at 57% of *issue volume*.
