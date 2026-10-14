@@ -1,0 +1,34 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\ZoeTrudeau\qe-capstone\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collecting ... collected 3 items
+
+src/tests/unit/test_check_a11y.py::test_no_violations_passes PASSED      [ 33%]
+src/tests/unit/test_check_a11y.py::test_each_affected_element_is_counted PASSED [ 66%]
+src/tests/unit/test_check_a11y.py::test_violations_without_nodes_each_count_as_one FAILED [100%]
+
+================================== FAILURES ===================================
+_______________ test_violations_without_nodes_each_count_as_one _______________
+
+tmp_path = WindowsPath('C:/Users/ZoeTrudeau/AppData/Local/Temp/pytest-of-ZoeTrudeau/pytest-0/test_violations_without_nodes_0')
+
+    def test_violations_without_nodes_each_count_as_one(tmp_path):
+        two = [{"impact": "critical", "nodes": []},
+               {"impact": "critical", "nodes": []}]
+        r = run_check(tmp_path, two, max_critical="1")
+>       assert "critical: 2" in r.stdout
+E       AssertionError: assert 'critical: 2' in ' critical: 1\n  serious: 0\n moderate: 0\n    minor: 0\ngates: critical <= 1, serious <= 0\nAccessibility violation gates met.\nA passing gate is not the same as an accessible page — automation covers roughly a third of WCAG success criteria. The keyboard pass is yours.\n'
+E        +  where ' critical: 1\n  serious: 0\n moderate: 0\n    minor: 0\ngates: critical <= 1, serious <= 0\nAccessibility violation gates met.\nA passing gate is not the same as an accessible page — automation covers roughly a third of WCAG success criteria. The keyboard pass is yours.\n' = CompletedProcess(args=['C:\\Users\\ZoeTrudeau\\qe-capstone\\.venv\\Scripts\\python.exe', 'C:\\Users\\ZoeTrudeau\\qe-capstone\\scripts\\check-a11y.py', 'C:\\Users\\ZoeTrudeau\\AppData\\Local\\Temp\\pytest-of-ZoeTrudeau\\pytest-0\\test_violations_without_nodes_0\\axe.json'], returncode=0, stdout=' critical: 1\n  serious: 0\n moderate: 0\n    minor: 0\ngates: critical <= 1, serious <= 0\nAccessibility violation gates met.\nA passing gate is not the same as an accessible page — automation covers roughly a third of WCAG success criteria. The keyboard pass is yours.\n', stderr='').stdout
+
+src\tests\unit\test_check_a11y.py:43: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_check_a11y.py::test_violations_without_nodes_each_count_as_one
+=================== 1 failed, 2 passed, 1 warning in 0.47s ====================
