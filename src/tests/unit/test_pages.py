@@ -45,6 +45,6 @@ def test_sign_in_page_renders_the_form():
     assert '<html lang="en">' in html
     assert "<title>Sign in · TalkDesk</title>" in html
     logger.info("Assert: the form and its labels")
-    assert '<form method="post" action="/api/login">' in html
+    assert '<form method="post" action="/login">' in html
     assert '<label for="email">' in html
     assert '<label for="password">' in html
