@@ -108,7 +108,7 @@ criterion is how a defect gets found.
 
 **Given** the seeded database, which holds talks in all four tracks
 **When** the list of talks is requested with the track "testing"
-**Then** every talk returned has the track "testing", no more than 100 are returned, and they are in ascending ID order
+**Then** every talk returned has the track "testing", no more than 100 are returned, and they are newest first (descending ID order)
 
 | | |
 |---|---|
@@ -117,6 +117,7 @@ criterion is how a defect gets found.
 | **Why that layer** | The filtering, limit and ordering are done by the SQL query; a stand-in database would return whatever the test fed it, so a broken query would still pass. |
 | **Test** | `src/tests/integration/test_talks_api.py::test_listing_filters_by_track` |
 | **Status** | Green |
+| **Changed** | 2026-10-14 (gap #21, PR #48): was "ascending ID order", which meant only the 100 oldest talks were ever listed, so new submissions never appeared. |
 
 ### AC-08 — Search matches title words regardless of case
 
