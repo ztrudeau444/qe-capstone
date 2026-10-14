@@ -1,7 +1,7 @@
 """TalkDesk: a conference talk-submission desk (the System Under Test)."""
 import logging
 import os
-import traceback
+import uuid
 from html import escape
 import psycopg
 from psycopg.rows import dict_row
@@ -78,15 +78,23 @@ async def add_security_headers(request, call_next):
 
 
 @app.exception_handler(Exception)
-async def verbose_error_handler(request, exc):
-    """Turn any unhandled error into a 500 reply.
-    Known gap (AC-11, D-7): the reply includes internal details."""
+async def generic_error_handler(request, exc):
+    """Turn any unhandled error into a plain 500 reply (AC-11, gap list #2, D-7).
+
+    The visitor gets a general message and a short reference code, nothing
+    about the code inside. The full details go to the server log under the
+    same reference, so a reported reference can still be traced.
+    This handler runs outside add_security_headers, so it adds them itself.
+    """
+    reference = uuid.uuid4().hex[:8]
+    logger.error("Unhandled error %s on %s %s", reference,
+                 request.method, request.url.path, exc_info=exc)
     return JSONResponse(
         status_code=500,
-        content={"error": type(exc).__name__,
-                 "message": str(exc),
-                 "path": request.url.path,
-                 "traceback": traceback.format_exc().splitlines()},
+        content={"error": "Something went wrong on our side. "
+                          "Quote this reference if you report it.",
+                 "reference": reference},
+        headers=SECURITY_HEADERS,
     )
 
 
