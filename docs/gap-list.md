@@ -48,6 +48,7 @@ Work through all four before ranking:
 | 25 | **Test client deprecation warning:** starlette warns that its test client's use of `httpx` is deprecated (it suggests `httpx2`). Harmless today; could break on a future upgrade. Split out of #24. | Test warnings | Low | S | Zoe | Week 4 | ☐ |
 | 26 | **Only the newest 100 talks can be listed.** Older talks are reachable only by search or by id; there is no "next page". Found while fixing #21. | Code, while fixing #21 | Low | M | Zoe | Week 4 | ☐ |
 | 27 | **Speakers must know their Speaker ID number** to submit a talk. Real speakers don't know it; the form should ask for name and email instead. Needs an API change, since `NewTalk` takes `speaker_id`. | Using the new /submit form (gap #18) | Low | M | Zoe | Week 4 | ☐ |
+| 28 | **`axe-audit.js` is never run and lists a page that does not exist.** `quality/accessibility/axe-audit.js` (a Playwright starter) still scans `/items`; the pipeline runs axe straight from `ci.yml` instead, so the file only misleads readers. Delete it or point it at the real pages. | Code reading, while adding /submit to the scans | Low | S | Zoe | Week 4 | ☐ |
 
 ## Accepted, not closed
 

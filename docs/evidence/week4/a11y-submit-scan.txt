@@ -1,0 +1,19 @@
+^[[36;1m  echo "axe results for /$PAGE:"^[[0m
+axe results for /:
+ critical: 0
+  serious: 0
+Accessibility violation gates met.
+axe results for /login:
+ critical: 0
+  serious: 0
+Accessibility violation gates met.
+axe results for /submit:
+ critical: 0
+  serious: 0
+Accessibility violation gates met.
+^[[36;1m  echo "::error::pa11y reported WCAG 2.0 AA failures"; exit 1; }^[[0m
+^[[36;1m  echo "Accessibility score for /$PAGE: $SCORE (gate: >= $MIN)"^[[0m
+^[[36;1m  [ "$SCORE" -ge "$MIN" ] || { echo "::error::Accessibility of /$PAGE is $SCORE, below the $MIN gate"; FAILED=1; }^[[0m
+Accessibility score for /: 95 (gate: >= 95)
+Accessibility score for /login: 95 (gate: >= 95)
+Accessibility score for /submit: 96 (gate: >= 95)
