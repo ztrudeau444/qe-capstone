@@ -5,10 +5,11 @@ import traceback
 from html import escape
 import psycopg
 from psycopg.rows import dict_row
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
+from urllib.parse import parse_qs
 
 # Log messages from TalkDesk are written under the name "talkdesk", so they
 # are easy to find and filter in the app's output.
@@ -270,10 +271,15 @@ class Login(BaseModel):
     password: str
 
 
+def demo_credentials_ok(email, password):
+    """The demo sign-in check, shared by the API and the web form (real sign-in is gap #1)."""
+    return email.endswith("@talkdesk.test") and password == "reviewer"
+
+
 @app.post("/api/login")
 def login(body: Login):
     """Reviewer sign-in: a demo token for an @talkdesk.test address."""
-    if body.email.endswith("@talkdesk.test") and body.password == "reviewer":
+    if demo_credentials_ok(body.email, body.password):
         return {"token": "talkdesk-demo-token-not-a-credential"}
     raise HTTPException(401, "invalid credentials")
 
@@ -346,10 +352,34 @@ def submit_form():
 def login_form():
     return page("Sign in", """
 <h2>Reviewer sign-in</h2>
-<form method="post" action="/api/login">
+<form method="post" action="/login">
   <label for="email">Email</label>
   <input id="email" name="email" type="email" required>
   <label for="password">Password</label>
   <input id="password" name="password" type="password" required>
   <button type="submit">Sign in</button>
 </form>""")
+
+
+@app.post("/login", response_class=HTMLResponse)
+async def login_submit(request: Request):
+    """Sign-in for the web form (gap list #17).
+
+    The form sends form data (email=...&password=...) but /api/login reads
+    JSON, so the form used to show a raw 422 error. This route reads the form
+    with the standard library (no extra package) and answers with a page.
+    """
+    fields = parse_qs((await request.body()).decode("utf-8"))
+    email = fields.get("email", [""])[0]
+    password = fields.get("password", [""])[0]
+    if demo_credentials_ok(email, password):
+        return page("Signed in", """
+<h2>Signed in</h2>
+<p>You are signed in as a reviewer.</p>
+<p><a href="/">Go to the talks</a></p>""")
+    response = page("Sign-in failed", """
+<h2>Sign-in failed</h2>
+<p role="alert">Email or password is incorrect.</p>
+<p><a href="/login">Try again</a></p>""")
+    response.status_code = 401
+    return response
