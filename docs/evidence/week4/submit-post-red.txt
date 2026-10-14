@@ -1,0 +1,101 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\ZoeTrudeau\qe-capstone\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collecting ... collected 11 items
+
+src/tests/unit/test_submit_form.py::test_page_is_not_the_placeholder PASSED [  9%]
+src/tests/unit/test_submit_form.py::test_form_posts_to_the_web_route PASSED [ 18%]
+src/tests/unit/test_submit_form.py::test_every_field_has_a_label PASSED  [ 27%]
+src/tests/unit/test_submit_form.py::test_abstract_is_a_text_area PASSED  [ 36%]
+src/tests/unit/test_submit_form.py::test_has_a_submit_button PASSED      [ 45%]
+src/tests/unit/test_submit_form.py::test_good_submission_saves_and_says_thanks FAILED [ 54%]
+src/tests/unit/test_submit_form.py::test_thanks_page_escapes_the_title FAILED [ 63%]
+src/tests/unit/test_submit_form.py::test_empty_title_shows_a_readable_error_and_a_way_back FAILED [ 72%]
+src/tests/unit/test_submit_form.py::test_unknown_track_shows_a_readable_error FAILED [ 81%]
+src/tests/unit/test_submit_form.py::test_speaker_id_that_is_not_a_number_shows_a_readable_error FAILED [ 90%]
+src/tests/unit/test_submit_form.py::test_unknown_speaker_shows_a_readable_error FAILED [100%]
+
+================================== FAILURES ===================================
+_________________ test_good_submission_saves_and_says_thanks __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000023D9D5C9250>
+
+    def test_good_submission_saves_and_says_thanks(monkeypatch):
+        saved = []
+        monkeypatch.setattr(talkdesk_app, "create_talk", fake_save(saved))
+        r = client.post("/submit", data=GOOD)
+>       assert r.status_code == 201
+E       assert 405 == 201
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+src\tests\unit\test_submit_form.py:68: AssertionError
+_____________________ test_thanks_page_escapes_the_title ______________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000023D9D51E450>
+
+    def test_thanks_page_escapes_the_title(monkeypatch):
+        monkeypatch.setattr(talkdesk_app, "create_talk", fake_save([]))
+        r = client.post("/submit", data={**GOOD, "title": "<script>alert(1)</script>"})
+        assert "<script>alert(1)</script>" not in r.text
+>       assert "&lt;script&gt;" in r.text
+E       assert '&lt;script&gt;' in '{"detail":"Method Not Allowed"}'
+E        +  where '{"detail":"Method Not Allowed"}' = <Response [405 Method Not Allowed]>.text
+
+src\tests\unit\test_submit_form.py:79: AssertionError
+___________ test_empty_title_shows_a_readable_error_and_a_way_back ____________
+
+    def test_empty_title_shows_a_readable_error_and_a_way_back():
+        r = client.post("/submit", data={**GOOD, "title": "   "})
+>       assert r.status_code == 400
+E       assert 405 == 400
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+src\tests\unit\test_submit_form.py:84: AssertionError
+__________________ test_unknown_track_shows_a_readable_error __________________
+
+    def test_unknown_track_shows_a_readable_error():
+        r = client.post("/submit", data={**GOOD, "track": "cooking"})
+>       assert r.status_code == 400
+E       assert 405 == 400
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+src\tests\unit\test_submit_form.py:92: AssertionError
+_________ test_speaker_id_that_is_not_a_number_shows_a_readable_error _________
+
+    def test_speaker_id_that_is_not_a_number_shows_a_readable_error():
+        r = client.post("/submit", data={**GOOD, "speaker_id": "abc"})
+>       assert r.status_code == 400
+E       assert 405 == 400
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+src\tests\unit\test_submit_form.py:98: AssertionError
+_________________ test_unknown_speaker_shows_a_readable_error _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000023D9D5CADB0>
+
+    def test_unknown_speaker_shows_a_readable_error(monkeypatch):
+        def no_such_speaker(body):
+            raise HTTPException(404, "speaker not found")
+        monkeypatch.setattr(talkdesk_app, "create_talk", no_such_speaker)
+        r = client.post("/submit", data=GOOD)
+>       assert r.status_code == 404
+E       assert 405 == 404
+E        +  where 405 = <Response [405 Method Not Allowed]>.status_code
+
+src\tests\unit\test_submit_form.py:107: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_submit_form.py::test_good_submission_saves_and_says_thanks
+FAILED src/tests/unit/test_submit_form.py::test_thanks_page_escapes_the_title
+FAILED src/tests/unit/test_submit_form.py::test_empty_title_shows_a_readable_error_and_a_way_back
+FAILED src/tests/unit/test_submit_form.py::test_unknown_track_shows_a_readable_error
+FAILED src/tests/unit/test_submit_form.py::test_speaker_id_that_is_not_a_number_shows_a_readable_error
+FAILED src/tests/unit/test_submit_form.py::test_unknown_speaker_shows_a_readable_error
+=================== 6 failed, 5 passed, 1 warning in 0.33s ====================
