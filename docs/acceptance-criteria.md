@@ -275,7 +275,7 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-08 | Search is case-insensitive | Integration | test_search_ignores_case | ☒ |
 | AC-09 | Unknown talk ID → 404 | Integration | test_unknown_talk_returns_not_found | ☒ |
 | AC-10 | Reviewer sign-in | Unit | test_correct_password_returns_token, test_wrong_password_is_rejected | ☒ |
-| AC-11 | Errors expose no internals (NF, known gap) | Unit | | ☐ |
+| AC-11 | Errors expose no internals (NF) | Unit | test_error_replies.py (4 tests) | ☒ |
 | AC-12 | List p95 ≤ 500 ms under load (NF) | System (Week 3) | | ☐ |
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
 | AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
