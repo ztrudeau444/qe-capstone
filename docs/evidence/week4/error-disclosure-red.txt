@@ -1,0 +1,80 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\ZoeTrudeau\qe-capstone\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collecting ... collected 4 items
+
+src/tests/unit/test_error_replies.py::test_reply_has_no_exception_name_traceback_or_paths FAILED [ 25%]
+src/tests/unit/test_error_replies.py::test_reply_is_a_general_message_with_a_reference FAILED [ 50%]
+src/tests/unit/test_error_replies.py::test_error_reply_keeps_the_security_headers FAILED [ 75%]
+src/tests/unit/test_error_replies.py::test_details_go_to_the_server_log_under_the_same_reference FAILED [100%]
+
+================================== FAILURES ===================================
+_____________ test_reply_has_no_exception_name_traceback_or_paths _____________
+
+    def test_reply_has_no_exception_name_traceback_or_paths():
+        text = crash_reply().text
+        for leak in ("ValueError", "Traceback", "invalid literal", ".py", 'File \\"'):
+>           assert leak not in text, f"error reply leaks {leak!r}"
+E           AssertionError: error reply leaks 'ValueError'
+E           assert 'ValueError' not in '{"error":"V...: \'abc\'"]}'
+E             
+E             'ValueError' is contained here:
+E               {"error":"ValueError","message":"invalid literal for int() with base 10: 'abc'","path":"/api/talks/abc","traceback":["Traceback (most recent call last):","  File \"C:\\Users\\ZoeTrudeau\\qe-capstone\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__","    await self.app(scope, receive, _send)","  File \"C:\\Users\\ZoeTrudeau\\qe-capstone\\.venv\\Lib\\site-packages\\fastapi\\telemetry\\_asgi.py\", line 151, in __call__","    await self.app(scope, receive, send)","  File \"C:\\Users\\ZoeTrudeau\\qe-capstone\\.venv\\Lib\\...
+E             
+E             ...Full output truncated (2 lines hidden), use '-vv' to show
+
+src\tests\unit\test_error_replies.py:28: AssertionError
+______________ test_reply_is_a_general_message_with_a_reference _______________
+
+    def test_reply_is_a_general_message_with_a_reference():
+        body = crash_reply().json()
+>       assert set(body) == {"error", "reference"}
+E       AssertionError: assert {'error', 'me..., 'traceback'} == {'error', 'reference'}
+E         
+E         Extra items in the left set:
+E         'traceback'
+E         'path'
+E         'message'
+E         Extra items in the right set:
+E         'reference'...
+E         
+E         ...Full output truncated (9 lines hidden), use '-vv' to show
+
+src\tests\unit\test_error_replies.py:33: AssertionError
+_________________ test_error_reply_keeps_the_security_headers _________________
+
+    def test_error_reply_keeps_the_security_headers():
+        r = crash_reply()
+>       assert r.headers.get("x-content-type-options") == "nosniff"
+E       AssertionError: assert None == 'nosniff'
+E        +  where None = get('x-content-type-options')
+E        +    where get = Headers({'content-length': '5186', 'content-type': 'application/json'}).get
+E        +      where Headers({'content-length': '5186', 'content-type': 'application/json'}) = <Response [500 Internal Server Error]>.headers
+
+src\tests\unit\test_error_replies.py:40: AssertionError
+_________ test_details_go_to_the_server_log_under_the_same_reference __________
+
+caplog = <_pytest.logging.LogCaptureFixture object at 0x0000028B4C099FA0>
+
+    def test_details_go_to_the_server_log_under_the_same_reference(caplog):
+        ref = crash_reply().json().get("reference", "no reference in the reply")
+        logged = [rec for rec in caplog.records if ref in rec.getMessage()]
+>       assert logged, "the server log has no entry for this reference"
+E       AssertionError: the server log has no entry for this reference
+E       assert []
+
+src\tests\unit\test_error_replies.py:47: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_error_replies.py::test_reply_has_no_exception_name_traceback_or_paths
+FAILED src/tests/unit/test_error_replies.py::test_reply_is_a_general_message_with_a_reference
+FAILED src/tests/unit/test_error_replies.py::test_error_reply_keeps_the_security_headers
+FAILED src/tests/unit/test_error_replies.py::test_details_go_to_the_server_log_under_the_same_reference
+======================== 4 failed, 1 warning in 0.43s =========================

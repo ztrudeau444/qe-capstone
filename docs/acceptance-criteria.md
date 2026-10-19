@@ -161,7 +161,7 @@ criterion is how a defect gets found.
 | **Test** | `src/tests/unit/test_login.py::test_correct_password_returns_token, test_wrong_password_is_rejected` |
 | **Status** | Green |
 
-### AC-11 — Errors never expose internal details (known gap)
+### AC-11 — Errors never expose internal details
 
 **Given** any request that causes an unexpected error (for example, requesting talk `abc`, which is not a number)
 **When** the system replies
@@ -172,8 +172,8 @@ criterion is how a defect gets found.
 | **Type** | Non-functional (security) |
 | **Test layer** | Unit |
 | **Why that layer** | The error handler is a single function; a test can hand it an error and inspect what it returns. |
-| **Test** | |
-| **Status** | Not started — known gap: TalkDesk currently returns the full traceback |
+| **Test** | `src/tests/unit/test_error_replies.py` (4 tests) |
+| **Status** | Green since 2026-10-14 (gap list #2): a general message and a reference code; details go only to the server log |
 
 ### AC-12 — Talk list stays fast under load
 
