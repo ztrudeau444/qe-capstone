@@ -1,0 +1,1 @@
+{"id":1,"title":"Scaling the Deployment Pipeline (1)","track":"testing","status":"submitted","score":7,"abstract":"A practical session with worked examples and a takeaway checklist.","speaker":{"id":27,"name":"Bo Castillo","email":"speaker27@talkdesk.test","bio":"Has spoken on software quality for 11 years."},"created_at":"2026-07-02T00:00:00Z"}

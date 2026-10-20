@@ -202,7 +202,7 @@ def get_talk(talk_id: str):
                                (talk["speaker_id"],)).fetchone()
     return {**talk_fields(talk), "abstract": talk["abstract"],
             "speaker": {"id": speaker["id"], "name": speaker["name"],
-                        "email": speaker["email"], "bio": speaker["bio"]},
+                        "bio": speaker["bio"]},
             "created_at": utc_timestamp(talk["created_at"])}
 
 
