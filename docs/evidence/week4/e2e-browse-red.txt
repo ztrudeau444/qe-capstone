@@ -1,0 +1,48 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0
+baseurl: http://localhost:8080
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collected 1 item
+
+src\tests\e2e\test_browse_to_talk.py F                                   [100%]
+
+================================== FAILURES ===================================
+___________ test_visitor_browses_from_home_page_to_a_talk[chromium] ___________
+
+page = <Page url='http://localhost:8080/api/talks/50000'>
+
+    @pytest.mark.e2e
+    def test_visitor_browses_from_home_page_to_a_talk(page: Page):
+        # Given the seeded database, a visitor opens the home page
+        page.goto("/")
+        first_link = page.locator("table tbody tr td a").first
+        clicked_title = first_link.inner_text()
+    
+        # When they click the title of the first talk listed
+        first_link.click()
+    
+        # Then they are on that talk's web page (not the JSON API)...
+>       expect(page).to_have_url(re.compile(r"://[^/]+/talks/\d+$"))
+E       AssertionError: Page URL expected to be 're.compile('://[^/]+/talks/\\d+$')'
+E       Actual value: http://localhost:8080/api/talks/50000 
+E       Call log:
+E         - PageAssertions.to_have_url with timeout 5000ms
+E         -   - waiting for locator(":root")
+E         -     9 × locator resolved to <html>…</html>
+E         -       - unexpected value "http://localhost:8080/api/talks/50000"
+
+src\tests\e2e\test_browse_to_talk.py:28: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+src\tests\e2e\test_browse_to_talk.py:17
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\e2e\test_browse_to_talk.py:17: PytestUnknownMarkWarning: Unknown pytest.mark.e2e - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.e2e
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/e2e/test_browse_to_talk.py::test_visitor_browses_from_home_page_to_a_talk[chromium]
+======================== 1 failed, 2 warnings in 7.57s ========================
