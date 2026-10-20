@@ -1,0 +1,92 @@
+.................................................                        [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+src\tests\integration\test_contract.py:13
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_contract.py:13: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_review_api.py:7
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_review_api.py:7: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_talks_api.py:8
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_talks_api.py:8: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_talks_api.py:27
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_talks_api.py:27: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_talks_api.py:37
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_talks_api.py:37: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_talks_api.py:49
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_talks_api.py:49: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\integration\test_talks_api.py:58
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\integration\test_talks_api.py:58: PytestUnknownMarkWarning: Unknown pytest.mark.integration - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.integration
+
+src\tests\unit\test_create_talk.py:8
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_create_talk.py:8: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_create_talk.py:20
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_create_talk.py:20: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_create_talk.py:32
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_create_talk.py:32: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_home_escaping.py:24
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_home_escaping.py:24: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_login.py:8
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_login.py:8: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_login.py:16
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_login.py:16: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_pages.py:22
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_pages.py:22: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_patch_talk.py:8
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_patch_talk.py:8: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_patch_talk.py:20
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_patch_talk.py:20: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_patch_talk.py:31
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_patch_talk.py:31: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_security_headers.py:21
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_security_headers.py:21: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_talk_page.py:31
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_talk_page.py:31: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_talk_page.py:39
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_talk_page.py:39: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_talk_page.py:51
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_talk_page.py:51: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+49 passed, 22 warnings in 3.08s

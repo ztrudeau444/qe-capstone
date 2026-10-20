@@ -5,7 +5,9 @@ import pytest
 TALK_FIELDS = {"id": int, "title": str, "abstract": str, "track": str,
                "status": str, "score": (int, type(None)), "speaker": dict,
                "created_at": str}
-SPEAKER_FIELDS = {"id": int, "name": str, "email": str, "bio": (str, type(None))}
+# No "email" (gap #29, 2026-10-20): this reply is public, so it must not hand
+# out personal data. Removing it was a deliberate contract change, not an accident.
+SPEAKER_FIELDS = {"id": int, "name": str, "bio": (str, type(None))}
 
 
 @pytest.mark.integration
