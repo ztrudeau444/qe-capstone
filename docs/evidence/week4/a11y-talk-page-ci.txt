@@ -1,0 +1,7 @@
+axe results for /talks/1:
+ > http://localhost:8080/talks/1 - 0 errors
+^[[36;1mfor PAGE in "" login submit talks/1; do^[[0m
+^[[36;1m  NAME="${PAGE:-home}"; NAME="${NAME//\//-}"   # talks/1 -> talks-1: no slash in file names^[[0m
+LH:status Navigating to http://localhost:8080/talks/1
+LH:Printer json output written to reports/lighthouse-talks-1.json
+Accessibility score for /talks/1: 95 (gate: >= 95)
