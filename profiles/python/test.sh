@@ -6,8 +6,10 @@ mkdir -p reports
 # here at all, so branch coverage, testpaths and --strict-markers — every
 # one of them set in profiles/python/pyproject.toml — silently do not apply,
 # and branch_minimum becomes unmeasurable for this profile.
+# -m "not e2e": E2E tests need a running site and a browser, so they
+# run in the Accessibility stage instead (see ci.yml, AC-14).
 set +e
-python3 -m pytest -c profiles/python/pyproject.toml \
+python3 -m pytest -c profiles/python/pyproject.toml -m "not e2e" \
   --cov=src/talkdesk \
   --cov-config=profiles/python/pyproject.toml \
   --cov-branch \

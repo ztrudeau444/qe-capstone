@@ -215,7 +215,7 @@ criterion is how a defect gets found.
 | **Test layer** | E2E |
 | **Why that layer** | This checks that the page, the link and the API are wired together, which only exists at the top; an integration test can prove the API returns a talk, but not that the link on the page points to it. |
 | **Test** | test_visitor_browses_from_home_page_to_a_talk (src/tests/e2e/test_browse_to_talk.py) |
-| **Status** | Passing 2026-10-20 (E2E, Playwright, run locally). The gap: each title linked to the JSON API, so a visitor got raw JSON. Fixed with a new /talks/{id} web page. Not yet run in CI. |
+| **Status** | Passing 2026-10-20 (E2E, Playwright). The gap: each title linked to the JSON API, so a visitor got raw JSON. Fixed with a new /talks/{id} web page. Runs in CI in the Accessibility stage, where TalkDesk is running. |
 
 ### AC-15 — Over-long title is rejected
 
