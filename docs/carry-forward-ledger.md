@@ -142,19 +142,19 @@ Web pages show only "Handler.", so AC-13 and AC-14 are blocked (TalkDesk's own `
 
 | Metric | Week 1 | Week 2 | Week 3 | Week 4 | Gate |
 |---|---|---|---|---|---|
-| Line coverage % | 55 | 89 |  |  | ≥ 80 |
-| **Branch coverage %** | 43 | 84 |  |  | **≥ 60** |
-| Maintainability grade | — | A | | | A |
-| Unit tests | 8 | 10 |  |  | — |
-| Integration tests | — | 7 |  |  | — |
-| E2E tests | — | 0 |  |  | — |
-| Suite runtime (s) | 1.4 | 1.0 |  |  | — |
-| p95 latency (ms) | — | — | | | ≤ 500 |
-| Error rate under load % | — | — | | | < 1 |
-| Critical CVEs | — | — | | | 0 |
-| **High CVEs** | — | — | | | **0** — this is the one `ci.yml` gates on |
-| Accessibility score | — | — | | | ≥ 95 |
-| Criteria covered | 6/15 | 13/17 | ____/____ | ____/____ | 100% F |
+| Line coverage % | 55 | 89 | 96 |  | ≥ 80 |
+| **Branch coverage %** | 43 | 84 | 91 |  | **≥ 60** |
+| Maintainability grade | — | A | A | | A |
+| Unit tests | 8 | 10 | 37 |  | — |
+| Integration tests | — | 7 | 7 |  | — |
+| E2E tests | — | 0 | 0 |  | — |
+| Suite runtime (s) | 1.4 | 1.0 | 2.5 |  | — |
+| p95 latency (ms) | — | — | 30 | | ≤ 500 |
+| Error rate under load % | — | — | 0.00 | | < 1 |
+| Critical CVEs | — | — | 0 | | 0 |
+| **High CVEs** | — | — | 0 | | **0** — this is the one `ci.yml` gates on |
+| Accessibility score | — | — | 95 | | ≥ 95 |
+| Criteria covered | 6/15 | 13/17 | 14/17 | ____/____ | 100% F |
 | Pipeline stages green | — | 3/3 | ____/6 | ____/8 | 8 |
 
 ---
