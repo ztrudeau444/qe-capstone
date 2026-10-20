@@ -302,6 +302,18 @@ jobs:
       - run: npm install -g @axe-core/cli lighthouse pa11y-ci
       - name: Start the system under test
         run: docker compose up -d --wait
+      # E2E (AC-14): a real browser against the TalkDesk started above. Only
+      # the e2e slice runs here. The Test stage skips it (test.sh passes
+      # -m "not e2e") because no site is running and no browser is installed
+      # there (run 39459474952: "Executable doesn't exist").
+      - uses: ./.github/actions/setup-profile
+        with:
+          profile: ${{ needs.config.outputs.profile }}
+      - name: E2E - a visitor browses to a talk (AC-14)
+        run: |
+          python3 -m playwright install --with-deps chromium
+          python3 -m pytest -c profiles/python/pyproject.toml -m e2e \
+            --base-url http://localhost:8080 -p no:cacheprovider
       - name: axe-core audit
         run: |
           mkdir -p reports

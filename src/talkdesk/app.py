@@ -340,7 +340,7 @@ def home():
         # Every value from the database is escaped before it goes into the
         # HTML (stored cross-site scripting fix, 2026-10-13): a talk titled
         # <script>...</script> is shown as text, not run in visitors' browsers.
-        f'<tr><td><a href="/api/talks/{int(t["id"])}">{escape(t["title"])}</a></td>'
+        f'<tr><td><a href="/talks/{int(t["id"])}">{escape(t["title"])}</a></td>'
         f'<td>{escape(t["speaker"]["name"])}</td><td>{escape(t["track"])}</td>'
         f'<td><span class="badge-{escape(t["status"])}">{escape(t["status"])}</span></td></tr>'
         for t in rows[:50])
@@ -350,6 +350,48 @@ def home():
   <thead><tr><th>Title</th><th>Speaker</th><th>Track</th><th>Status</th></tr></thead>
   <tbody>{trs}</tbody>
 </table>""")
+
+
+def talk_not_found():
+    """The page for a talk number that does not exist (or is not a number)."""
+    response = page("Talk not found", """
+<h2>Talk not found</h2>
+<p>There is no talk with that number.</p>
+<p><a href="/">Back to all talks</a></p>""")
+    response.status_code = 404
+    return response
+
+
+@app.get("/talks/{talk_id}", response_class=HTMLResponse)
+def talk_page(talk_id: str):
+    """One talk's details as a web page (AC-14).
+
+    The home page used to link each title to /api/talks/{id}, so a visitor who
+    clicked got raw JSON (found by the E2E test, 2026-10-20). This page reuses
+    get_talk() for the data and shows it for people. The speaker's email is
+    deliberately left out. Anything that is not a known talk number gets a 404
+    page instead of a crash (get_talk's int() is unguarded on purpose).
+    """
+    if not talk_id.isdigit() or len(talk_id) > 9:
+        return talk_not_found()
+    try:
+        talk = get_talk(talk_id)
+    except HTTPException as error:
+        if error.status_code == 404:
+            return talk_not_found()
+        raise
+    title = escape(talk["title"])
+    abstract = escape(talk.get("abstract") or "") or "<em>No abstract given.</em>"
+    return page(title, f"""
+<h2>{title}</h2>
+<dl>
+  <dt>Speaker</dt><dd>{escape(talk["speaker"]["name"])}</dd>
+  <dt>Track</dt><dd>{escape(talk["track"])}</dd>
+  <dt>Status</dt><dd>{escape(talk["status"])}</dd>
+  <dt>Submitted</dt><dd>{escape(str(talk["created_at"]))}</dd>
+  <dt>Abstract</dt><dd>{abstract}</dd>
+</dl>
+<p><a href="/">Back to all talks</a></p>""")
 
 
 @app.get("/submit", response_class=HTMLResponse)

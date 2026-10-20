@@ -214,8 +214,8 @@ criterion is how a defect gets found.
 | **Type** | Functional |
 | **Test layer** | E2E |
 | **Why that layer** | This checks that the page, the link and the API are wired together, which only exists at the top; an integration test can prove the API returns a talk, but not that the link on the page points to it. |
-| **Test** | |
-| **Status** | Not started — known gap: the home page currently shows only "Handler." |
+| **Test** | test_visitor_browses_from_home_page_to_a_talk (src/tests/e2e/test_browse_to_talk.py) |
+| **Status** | Passing 2026-10-20 (E2E, Playwright). The gap: each title linked to the JSON API, so a visitor got raw JSON. Fixed with a new /talks/{id} web page. Runs in CI in the Accessibility stage, where TalkDesk is running. |
 
 ### AC-15 — Over-long title is rejected
 
@@ -278,7 +278,7 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-11 | Errors expose no internals (NF) | Unit | test_error_replies.py (4 tests) | ☒ |
 | AC-12 | List p95 ≤ 500 ms under load (NF) | System (Week 3) | | ☐ |
 | AC-13 | Sign-in page accessible (NF, known gap) | E2E (Week 3) | | ☐ |
-| AC-14 | Visitor browses to a talk (known gap) | E2E | | ☐ |
+| AC-14 | Visitor browses to a talk | E2E | test_visitor_browses_from_home_page_to_a_talk | ☒ |
 | AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☒ |
 | AC-16 | Invalid status rejected | Unit | test_invalid_status_is_rejected | ☒ |
 | AC-17 | Review is saved | Integration | test_review_is_saved | ☒ |
