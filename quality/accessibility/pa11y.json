@@ -16,6 +16,7 @@
   "urls": [
     "http://localhost:8080/",
     "http://localhost:8080/login",
-    "http://localhost:8080/submit"
+    "http://localhost:8080/submit",
+    "http://localhost:8080/talks/1"
   ]
 }

@@ -329,13 +329,14 @@ jobs:
           # it as ONE address (run 38456096627: a 404 reply, which has no
           # title or lang). Each page now has its own run and report.
           FAILED=0
-          for PAGE in "" login submit; do
+          for PAGE in "" login submit talks/1; do
+            NAME="${PAGE:-home}"; NAME="${NAME//\//-}"   # talks/1 -> talks-1: no slash in file names
             axe "http://localhost:8080/$PAGE" \
               --tags wcag2a,wcag2aa,wcag21a,wcag21aa \
               --chromedriver-path "$CHROMEWEBDRIVER/chromedriver" \
-              --save "reports/axe-${PAGE:-home}.json"
+              --save "reports/axe-$NAME.json"
             echo "axe results for /$PAGE:"
-            python3 scripts/check-a11y.py "reports/axe-${PAGE:-home}.json" || FAILED=1
+            python3 scripts/check-a11y.py "reports/axe-$NAME.json" || FAILED=1
           done
           # No `|| true` here either. Without --exit, axe returns 0 even when it
           # finds violations, so the only thing `|| true` could still swallow is
@@ -362,8 +363,9 @@ jobs:
           # page: AC-13 is about /login, which the starter never scored.
           MIN=${{ needs.config.outputs.a11y_min }}
           FAILED=0
-          for PAGE in "" login submit; do
-            REPORT="reports/lighthouse-${PAGE:-home}.json"
+          for PAGE in "" login submit talks/1; do
+            NAME="${PAGE:-home}"; NAME="${NAME//\//-}"   # talks/1 -> talks-1: no slash in file names
+            REPORT="reports/lighthouse-$NAME.json"
             lighthouse "http://localhost:8080/$PAGE" \
               --only-categories=accessibility \
               --chrome-flags="--headless --no-sandbox" \
