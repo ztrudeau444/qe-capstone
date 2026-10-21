@@ -22,5 +22,13 @@ class TalkDeskApi:
     def search_talks(self, words):
         return self._client.get("/api/talks/search", params={"q": words})
 
-    def review_talk(self, talk_id, **review):
-        return self._client.patch(f"/api/talks/{talk_id}", json=review)
+    def sign_in(self, email, password):
+        """Sign in as a reviewer and return the token (gap #1)."""
+        reply = self._client.post("/api/login", json={"email": email, "password": password})
+        reply.raise_for_status()
+        return reply.json()["token"]
+
+    def review_talk(self, talk_id, token=None, **review):
+        """Review a talk. Pass the token from sign_in(); without one TalkDesk replies 401."""
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        return self._client.patch(f"/api/talks/{talk_id}", json=review, headers=headers)

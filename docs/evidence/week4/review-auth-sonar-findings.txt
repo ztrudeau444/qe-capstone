@@ -1,0 +1,2 @@
+VULNERABILITY MAJOR python:S2068 src/pages/talkdesk_api.py line 25 - "password" detected here, review this potentially hard-coded credential.
+BUG MAJOR python:S5863 src/tests/unit/test_review_auth.py line 43 - Replace this assertion to not have the same actual and expected expression.

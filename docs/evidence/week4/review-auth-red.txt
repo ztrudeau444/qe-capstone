@@ -1,0 +1,383 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0
+rootdir: C:\Users\ZoeTrudeau\qe-capstone
+plugins: allure-pytest-2.13.5, anyio-4.15.1, base-url-2.1.0, cov-6.0.0, playwright-0.6.2
+collected 5 items
+
+src\tests\unit\test_review_auth.py FFFFF                                 [100%]
+
+================================== FAILURES ===================================
+___________________ test_review_without_a_token_is_refused ____________________
+
+no_database = None
+
+    @pytest.mark.unit
+    def test_review_without_a_token_is_refused(no_database):
+        reply = client.patch("/api/talks/1", json=REVIEW)
+>       assert reply.status_code == 401
+E       assert 500 == 401
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+src\tests\unit\test_review_auth.py:26: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    talkdesk:app.py:90 Unhandled error 064e2f93 on PATCH /api/talks/1
+Traceback (most recent call last):
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 362, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 270, in patch_talk
+    with db() as conn:
+         ^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\conftest.py", line 12, in database_must_not_be_touched
+    raise AssertionError("the database must not be touched")
+AssertionError: the database must not be touched
+_____ test_review_with_an_unknown_token_is_refused[Bearer made-up-token] ______
+
+no_database = None, header = 'Bearer made-up-token'
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("header", [
+        "Bearer made-up-token",
+        "Bearer talkdesk-demo-token-not-a-credential",   # the old fixed token everyone could copy
+        "made-up-token",                                 # no "Bearer" in front
+    ])
+    def test_review_with_an_unknown_token_is_refused(no_database, header):
+        reply = client.patch("/api/talks/1", json=REVIEW, headers={"Authorization": header})
+>       assert reply.status_code == 401
+E       assert 500 == 401
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+src\tests\unit\test_review_auth.py:38: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    talkdesk:app.py:90 Unhandled error 95150c6c on PATCH /api/talks/1
+Traceback (most recent call last):
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 362, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 270, in patch_talk
+    with db() as conn:
+         ^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\conftest.py", line 12, in database_must_not_be_touched
+    raise AssertionError("the database must not be touched")
+AssertionError: the database must not be touched
+_ test_review_with_an_unknown_token_is_refused[Bearer talkdesk-demo-token-not-a-credential] _
+
+no_database = None, header = 'Bearer talkdesk-demo-token-not-a-credential'
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("header", [
+        "Bearer made-up-token",
+        "Bearer talkdesk-demo-token-not-a-credential",   # the old fixed token everyone could copy
+        "made-up-token",                                 # no "Bearer" in front
+    ])
+    def test_review_with_an_unknown_token_is_refused(no_database, header):
+        reply = client.patch("/api/talks/1", json=REVIEW, headers={"Authorization": header})
+>       assert reply.status_code == 401
+E       assert 500 == 401
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+src\tests\unit\test_review_auth.py:38: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    talkdesk:app.py:90 Unhandled error d576e9b8 on PATCH /api/talks/1
+Traceback (most recent call last):
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 362, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 270, in patch_talk
+    with db() as conn:
+         ^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\conftest.py", line 12, in database_must_not_be_touched
+    raise AssertionError("the database must not be touched")
+AssertionError: the database must not be touched
+_________ test_review_with_an_unknown_token_is_refused[made-up-token] _________
+
+no_database = None, header = 'made-up-token'
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("header", [
+        "Bearer made-up-token",
+        "Bearer talkdesk-demo-token-not-a-credential",   # the old fixed token everyone could copy
+        "made-up-token",                                 # no "Bearer" in front
+    ])
+    def test_review_with_an_unknown_token_is_refused(no_database, header):
+        reply = client.patch("/api/talks/1", json=REVIEW, headers={"Authorization": header})
+>       assert reply.status_code == 401
+E       assert 500 == 401
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+src\tests\unit\test_review_auth.py:38: AssertionError
+------------------------------ Captured log call ------------------------------
+ERROR    talkdesk:app.py:90 Unhandled error 9a9a9d62 on PATCH /api/talks/1
+Traceback (most recent call last):
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 203, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 73, in add_security_headers
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 179, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\routing.py", line 362, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\telemetry\_api.py", line 244, in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\talkdesk\app.py", line 270, in patch_talk
+    with db() as conn:
+         ^^^^
+  File "C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\conftest.py", line 12, in database_must_not_be_touched
+    raise AssertionError("the database must not be touched")
+AssertionError: the database must not be touched
+____________________ test_each_sign_in_gets_its_own_token _____________________
+
+    @pytest.mark.unit
+    def test_each_sign_in_gets_its_own_token():
+>       assert sign_in() != sign_in()
+E       AssertionError: assert 'talkdesk-demo-token-not-a-credential' != 'talkdesk-demo-token-not-a-credential'
+E        +  where 'talkdesk-demo-token-not-a-credential' = sign_in()
+E        +  and   'talkdesk-demo-token-not-a-credential' = sign_in()
+
+src\tests\unit\test_review_auth.py:43: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\ZoeTrudeau\qe-capstone\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+src\tests\unit\test_review_auth.py:23
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_review_auth.py:23: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_review_auth.py:30
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_review_auth.py:30: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+src\tests\unit\test_review_auth.py:41
+  C:\Users\ZoeTrudeau\qe-capstone\src\tests\unit\test_review_auth.py:41: PytestUnknownMarkWarning: Unknown pytest.mark.unit - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.unit
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED src/tests/unit/test_review_auth.py::test_review_without_a_token_is_refused
+FAILED src/tests/unit/test_review_auth.py::test_review_with_an_unknown_token_is_refused[Bearer made-up-token]
+FAILED src/tests/unit/test_review_auth.py::test_review_with_an_unknown_token_is_refused[Bearer talkdesk-demo-token-not-a-credential]
+FAILED src/tests/unit/test_review_auth.py::test_review_with_an_unknown_token_is_refused[made-up-token]
+FAILED src/tests/unit/test_review_auth.py::test_each_sign_in_gets_its_own_token
+======================== 5 failed, 4 warnings in 1.11s ========================
