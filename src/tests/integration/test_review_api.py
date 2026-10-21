@@ -10,7 +10,7 @@ def test_review_is_saved(api, database):
     original = review_of(database, 1)
     neighbour = review_of(database, 2)
     try:
-        r = api.review_talk(1, status="accepted", score=9)
+        r = api.review_talk(1, token=api.sign_in(), status="accepted", score=9)
         assert r.status_code == 200
         assert (r.json()["status"], r.json()["score"]) == ("accepted", 9)
 
@@ -20,3 +20,13 @@ def test_review_is_saved(api, database):
         assert review_of(database, 2) == neighbour, "a different talk changed"
     finally:                                  # put talk 1 back as it was
         set_review(database, 1, *original)
+
+
+@pytest.mark.integration
+def test_review_without_sign_in_changes_nothing(api, database):
+    """Gap #1: a review without a token is refused (401), and talk 1 is
+    unchanged in the real database."""
+    before = review_of(database, 1)
+    r = api.review_talk(1, status="rejected", score=1)
+    assert r.status_code == 401
+    assert review_of(database, 1) == before

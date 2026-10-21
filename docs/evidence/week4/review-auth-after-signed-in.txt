@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+date: Wed, 21 Oct 2026 14:54:28 GMT
+server: uvicorn
+content-length: 103
+content-type: application/json
+x-frame-options: DENY
+x-content-type-options: nosniff
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'
+permissions-policy: camera=(), microphone=(), geolocation=()
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+cache-control: no-store
+
+{"id":1,"title":"Scaling the Deployment Pipeline (1)","track":"testing","status":"submitted","score":7}

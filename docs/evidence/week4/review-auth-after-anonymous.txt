@@ -1,0 +1,16 @@
+HTTP/1.1 401 Unauthorized
+date: Wed, 21 Oct 2026 14:54:25 GMT
+server: uvicorn
+www-authenticate: Bearer
+content-length: 36
+content-type: application/json
+x-frame-options: DENY
+x-content-type-options: nosniff
+content-security-policy: default-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'
+permissions-policy: camera=(), microphone=(), geolocation=()
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+cache-control: no-store
+
+{"detail":"sign in to review talks"}

@@ -1,11 +1,12 @@
 """TalkDesk: a conference talk-submission desk (the System Under Test)."""
 import logging
 import os
+import secrets
 import uuid
 from html import escape
 import psycopg
 from psycopg.rows import dict_row
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
@@ -257,7 +258,22 @@ def validate_talk_patch(body: TalkPatch) -> None:
         raise HTTPException(400, "nothing to update")
 
 
-@app.patch("/api/talks/{talk_id}")
+# Tokens handed out by /api/login since TalkDesk started (gap #1). Kept in
+# memory: TalkDesk runs as one uvicorn process (see the Dockerfile), and a
+# restart signs every reviewer out, which is acceptable for this demo sign-in.
+REVIEWER_TOKENS: set = set()
+
+
+def require_reviewer(authorization: Optional[str] = Header(None)):
+    """The door check for reviewing (gap #1): let the request in only with a
+    token from /api/login, sent as "Authorization: Bearer <token>"."""
+    scheme, _, token = (authorization or "").partition(" ")
+    if scheme.lower() != "bearer" or token not in REVIEWER_TOKENS:
+        raise HTTPException(401, "sign in to review talks",
+                            headers={"WWW-Authenticate": "Bearer"})
+
+
+@app.patch("/api/talks/{talk_id}", dependencies=[Depends(require_reviewer)])
 def patch_talk(talk_id: int, body: TalkPatch):
     """Reviewer update of a talk's status and/or score."""
     validate_talk_patch(body)
@@ -288,9 +304,13 @@ def demo_credentials_ok(email, password):
 
 @app.post("/api/login")
 def login(body: Login):
-    """Reviewer sign-in: a demo token for an @talkdesk.test address."""
+    """Reviewer sign-in: a fresh random token for an @talkdesk.test address.
+    The token is remembered, and PATCH /api/talks/{id} asks for it (gap #1).
+    It replaced a fixed demo token that anyone who had seen it could use."""
     if demo_credentials_ok(body.email, body.password):
-        return {"token": "talkdesk-demo-token-not-a-credential"}
+        token = secrets.token_urlsafe(32)
+        REVIEWER_TOKENS.add(token)
+        return {"token": token}
     raise HTTPException(401, "invalid credentials")
 
 
