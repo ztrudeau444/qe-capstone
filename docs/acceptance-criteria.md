@@ -248,7 +248,7 @@ criterion is how a defect gets found.
 ### AC-17 — A review is saved
 
 **Given** talk 1 exists
-**When** a reviewer sets its status to "accepted" and its score to 9
+**When** a signed-in reviewer sets its status to "accepted" and its score to 9
 **Then** the reply is 200 with the new status and score, fetching talk 1 returns them, and talk 2 is unchanged
 
 | | |
@@ -258,6 +258,20 @@ criterion is how a defect gets found.
 | **Why that layer** | The update and the values returned are produced by the database (`UPDATE ... RETURNING`); a unit test replaces the database, so it cannot tell whether the change was really saved. |
 | **Test** | `src/tests/integration/test_review_api.py::test_review_is_saved` |
 | **Status** | Green |
+
+### AC-18 — Only signed-in reviewers can review a talk
+
+**Given** talk 1 exists
+**When** someone reviews it without a sign-in token, or with a token TalkDesk did not hand out
+**Then** the reply is 401 "sign in to review talks" and talk 1 is unchanged; with a token from sign-in, the review goes through (AC-17)
+
+| | |
+|---|---|
+| **Type** | Functional (security) |
+| **Test layer** | Unit and Integration |
+| **Why that layer** | The refusal happens at the door, before the database, so unit tests can check every kind of bad token quickly; one integration test proves against the real database that a refused review changes nothing. |
+| **Test** | `src/tests/unit/test_review_auth.py` (5 tests); `src/tests/integration/test_review_api.py::test_review_without_sign_in_changes_nothing` |
+| **Status** | Green (added 2026-10-21; closes gap #1) |
 
 ## Traceability
 
@@ -282,3 +296,4 @@ Every functional criterion must reach 100% coverage by the Week 4 exit gate.
 | AC-15 | Over-long title rejected | Unit | test_title_over_200_characters_is_rejected | ☒ |
 | AC-16 | Invalid status rejected | Unit | test_invalid_status_is_rejected | ☒ |
 | AC-17 | Review is saved | Integration | test_review_is_saved | ☒ |
+| AC-18 | Only signed-in reviewers can review | Unit + Integration | test_review_auth.py (5 tests), test_review_without_sign_in_changes_nothing | ☒ |
