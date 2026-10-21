@@ -40,4 +40,5 @@ def test_review_with_an_unknown_token_is_refused(no_database, header):
 
 @pytest.mark.unit
 def test_each_sign_in_gets_its_own_token():
-    assert sign_in() != sign_in()
+    first, second = sign_in(), sign_in()
+    assert first != second

@@ -22,7 +22,7 @@ class TalkDeskApi:
     def search_talks(self, words):
         return self._client.get("/api/talks/search", params={"q": words})
 
-    def sign_in(self, email="reviewer@talkdesk.test", password="reviewer"):
+    def sign_in(self, email, password):
         """Sign in as a reviewer and return the token (gap #1)."""
         reply = self._client.post("/api/login", json={"email": email, "password": password})
         reply.raise_for_status()

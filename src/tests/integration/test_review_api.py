@@ -10,7 +10,7 @@ def test_review_is_saved(api, database):
     original = review_of(database, 1)
     neighbour = review_of(database, 2)
     try:
-        r = api.review_talk(1, token=api.sign_in(), status="accepted", score=9)
+        r = api.review_talk(1, token=api.sign_in("reviewer@talkdesk.test", "reviewer"), status="accepted", score=9)
         assert r.status_code == 200
         assert (r.json()["status"], r.json()["score"]) == ("accepted", 9)
 
