@@ -24,6 +24,7 @@
 4. **Errors leaked internals (gap #2).** Error replies showed a full stack trace (4.5 KB). Now visitors get a short message with a reference number, and the details go only to the server log. (PRs #53–#55, AC-11)
 5. **The "known gap" since Week 2 (AC-14).** Clicking a talk showed raw JSON. I wrote a real-browser test (Playwright), built the talk page, and when the test first failed in CI (no browser there), I split the pipeline so E2E runs where the site is running. (PR #57)
 6. **A tool failure, not a code failure.** SonarQube rejected a docs-only change three times. Its own error report showed the project had become private, and the free plan only analyses public projects. I fixed the setting without bypassing the gate. (PR #56)
+7. **Testing my own quality gate (gap #31).** A pull request merged while three stages were still running. GitHub's settings showed that only 3 of my 8 stages were required to pass. I made the final "Quality summary" check required too, then proved it: an immediate merge was refused until every stage passed. (PR #67)
 
 ## Honestly still open
 
@@ -36,6 +37,5 @@ Full list: `docs/gap-list.md`.
 
 ## In my words
 
-- **What surprised me most:** _(to fill in)_
-- **What I would do next with another week:** _(to fill in)_
-- **How my kitchen experience helped:** _(to fill in)_
+- **What surprised me most:** How often the problem was not in TalkDesk's code but in the tools and settings around it: a quality tool set to private, a browser missing in CI, and a merge rule that only checked 3 of 8 stages. The pipeline is a product too, and it needs testing like any other. I was also surprised how much measuring matters: one change (a JOIN) made the talk list about 50 times faster, and I would have guessed the wrong cause without the numbers.
+- **What I would do next with another week:** Real sign-in (gap #30), because it is now the biggest remaining risk: proper accounts, stored password hashes and tokens that expire. Then find out why the long soak run slowed to a p95 of 797 ms when the 5-minute load test stays at 30 ms, and add an active security scan (gap #15). I would take them in that order, highest risk first.
