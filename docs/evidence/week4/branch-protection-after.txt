@@ -1,0 +1,4 @@
+1 · Build
+2 · Test
+3 · Analyze
+Quality summary
