@@ -14,21 +14,21 @@ Week 2. Assessed at the Week 2 exit gate. Updated in Week 4 (2026-10-20) to matc
 
 | Layer       | What it covers here                                                                                                                                                                                                      | Roughly how many | Runs in                                                                                           |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------- |
-| Unit        | The rules, decided in code before the database is touched (blank title, title length, track, score range, status, empty update, sign-in), plus the web pages and the error replies, with the database swapped for a fake | 42               | Test stage                                                                                        |
-| Integration | TalkDesk's API and the real database together: saving, listing, search, not-found, reviews, and the contract test                                                                                                        | 7                | Test stage                                                                                        |
+| Unit        | The rules, decided in code before the database is touched (blank title, title length, track, score range, status, empty update, sign-in), plus the web pages and the error replies, with the database swapped for a fake | 47               | Test stage                                                                                        |
+| Integration | TalkDesk's API and the real database together: saving, listing, search, not-found, reviews, and the contract test                                                                                                        | 8                | Test stage                                                                                        |
 | E2E         | A visitor browsing to a talk (AC-14), in a real browser (Playwright) against the running system                                                                                                                          | 1                | Accessibility stage, where TalkDesk is running (the Test stage leaves it out with `-m "not e2e"`) |
 | Smoke       | The two or three checks that prove a deployment is alive                                                                                                                                                                 | 0 so far         | Smoke stage                                                                                       |
 
-**Why this shape?** It is a pyramid in direction, with unit tests the largest layer and E2E the smallest, but the integration layer is nearly as big as the unit layer, and that is deliberate. TalkDesk is a thin API over a database: most of its behaviour lives in SQL (filtering, case-insensitive search, the defaults the database fills in, `UPDATE ... RETURNING`). A unit test replaces the database, so it cannot see any of that. Each criterion was placed at the lowest layer that could catch its failure (Week 1 Reader §3.8), and for this system that lowest layer is often integration. E2E stays at one or two journeys because each one is slow and only proves the wiring. Since Week 3 the unit layer has grown much larger (42), because the web pages and the error replies can be tested with a fake database; the reasoning above still holds for anything that lives in SQL.
+**Why this shape?** It is a pyramid in direction, with unit tests the largest layer and E2E the smallest, but the integration layer is nearly as big as the unit layer, and that is deliberate. TalkDesk is a thin API over a database: most of its behaviour lives in SQL (filtering, case-insensitive search, the defaults the database fills in, `UPDATE ... RETURNING`). A unit test replaces the database, so it cannot see any of that. Each criterion was placed at the lowest layer that could catch its failure (Week 1 Reader §3.8), and for this system that lowest layer is often integration. E2E stays at one or two journeys because each one is slow and only proves the wiring. Since Week 3 the unit layer has grown much larger (47), because the web pages and the error replies can be tested with a fake database; the reasoning above still holds for anything that lives in SQL.
 
 ## Traceability
 
 Every criterion in `acceptance-criteria.md` covered at the layer named there.
 
-15 of 17 criteria have a passing test (2026-10-20):
+16 of 18 criteria have a passing test (2026-10-21):
 
-- **Unit:** AC-02, 03, 05, 06, 10, 11, 15, 16
-- **Integration:** AC-01, 04, 07, 08, 09, 17, plus the contract test
+- **Unit:** AC-02, 03, 05, 06, 10, 11, 15, 16, 18
+- **Integration:** AC-01, 04, 07, 08, 09, 17, 18, plus the contract test
 - **E2E:** AC-14
 
 The 2 without a test of their own, and how each is checked instead:
